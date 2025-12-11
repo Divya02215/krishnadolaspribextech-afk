@@ -1,16 +1,24 @@
-// C:\MERN\Backend\routes\auth.js
 const express = require("express");
 const router = express.Router();
 
-const { login, signup } = require("../controllers/authController");
+const {
+  login,
+  signup,
+  completeProfile,
+  updateInterests,
+} = require("../controllers/authController");
+const authMiddleware = require("../middleware/authMiddleware");
 
-console.log("login type:", typeof login);
-console.log("signup type:", typeof signup);
-
-// POST /api/accounts/login/
+// Auth routes
 router.post("/login/", login);
-
-// POST /api/accounts/signup/
 router.post("/signup/", signup);
+
+// Protected routes
+router.post("/complete-profile/", authMiddleware, completeProfile);
+console.log("Route registered: POST /api/accounts/complete-profile/");
+
+// NEW: protected route for updating interests
+router.post("/update-interests/", authMiddleware, updateInterests);
+console.log("Route registered: POST /api/accounts/update-interests/");
 
 module.exports = router;

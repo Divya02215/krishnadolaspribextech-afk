@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { GoogleIcon, AppleIcon, FacebookIcon } from "./SocialIcons";
 import API from "./api"; // axios instance
+import backgroundimage from "../Assets/LoginBackgroundimage.webp";
+
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -69,6 +71,7 @@ const Signup = () => {
   };
 
   const handleSubmit = async (e) => {
+    console.log("FORM SUBMIT FIRED");
     e.preventDefault();
     setErrors({});
 
@@ -76,7 +79,7 @@ const Signup = () => {
 
     setLoading(true);
     try {
-      const res = await API.post("/api/accounts/signup/", {
+      const res = await API.post(`${process.env.REACT_APP_API_BASE_URL}/api/accounts/signup/`, {
   first_name: formData.firstName || undefined,
   last_name: formData.lastName || undefined,
   email: formData.email,
@@ -115,10 +118,13 @@ const Signup = () => {
   };
 
   return (
-    <div
-      className="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex justify-center relative"
-      style={{ paddingTop: "30px" }}
-    >
+   <div
+  className="w-full h-screen flex justify-center items-start"
+  style={{
+    backgroundColor: "#F6F6F6",
+    overflowX: "hidden",
+  }}
+>
       {/* OUTER WHITE BOX */}
       <div
         className="bg-white rounded-[4px] relative flex justify-center"
@@ -126,9 +132,10 @@ const Signup = () => {
           width: "580px",
           height: "964px",
           top: "30px",
+          borderRadius:'4px'
         }}
       >
-        {/* INNER CONTENT BOX */}
+        {/* INNER BOX */}
         <div
           className="bg-white rounded-[12px] flex flex-col items-center p-8 relative"
           style={{
@@ -138,9 +145,9 @@ const Signup = () => {
           }}
         >
           {/* BACK BUTTON */}
-          <button
+          {/* <button
             onClick={() => window.history.back()}
-            className="absolute top-0 left-0 p-2 rounded-full hover:bg-gray-100 transition"
+            className="absolute p-2 rounded-full hover:bg-gray-100 transition"
             style={{ top: "-40px", left: "-40px" }}
           >
             <svg
@@ -157,9 +164,9 @@ const Signup = () => {
                 fill="#272612"
               />
             </svg>
-          </button>
+          </button> */}
 
-          {/* LOGO + TAGLINE */}
+          {/* LOGO */}
           <div className="self-start mb-4" style={{ marginTop: "10px" }}>
             <h1
               className="font-semibold"
@@ -173,6 +180,7 @@ const Signup = () => {
             >
               Univa
             </h1>
+
             <p
               style={{
                 fontFamily: "Poppins",
@@ -181,12 +189,15 @@ const Signup = () => {
                 lineHeight: "100%",
                 marginTop: "8px",
                 textTransform: "capitalize",
+                paddingTop: "15px",
+    paddingBottom: "25px",
               }}
             >
-              connect. create. commerce.
+              Connect. Create. Commerce.
             </p>
           </div>
 
+          {/* TITLE */}
           <h2
             className="mb-6 self-start"
             style={{
@@ -205,150 +216,194 @@ const Signup = () => {
           <form className="w-full space-y-6" onSubmit={handleSubmit}>
             {/* EMAIL */}
             <div>
-              <h4 className="mb-1" style={{ fontFamily: "Poppins", fontWeight: 400, fontSize: "16px", color: "#666666" }}>
+              <h4 className="mb-1 text-[#666]" style={{ fontFamily: "Poppins" }}>
                 Email
               </h4>
               <input
                 type="email"
                 name="email"
-                placeholder="Enter Email"
-                style={{ width: "350px", height: "56px", borderRadius: "12px", borderWidth: "1px" }}
-                className={`px-4 py-2 border focus:ring-1 ${errors.email ? "border-red-500" : "border-gray-300"}`}
+                style={{
+                  width: "350px",
+                  height: "56px",
+                  borderRadius: "12px",
+                  borderWidth: "1px",
+                }}
+                placeholder=""
+                className="px-4 py-2 border border-gray-300 focus:ring-1"
                 value={formData.email}
                 onChange={handleChange}
               />
-              {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
             </div>
 
-            {/* PHONE */}
+            {/* PHONE NUMBER */}
             <div>
-              <h4 className="mb-1" style={{ fontFamily: "Poppins", fontWeight: 400, fontSize: "16px", color: "#666666" }}>
+              <h4 className="mb-1 text-[#666]" style={{ fontFamily: "Poppins" }}>
                 Phone Number
               </h4>
               <input
                 type="tel"
                 name="phoneNumber"
-                placeholder="10-digit Phone Number"
-                style={{ width: "350px", height: "56px", borderRadius: "12px", borderWidth: "1px" }}
-                className={`px-4 py-2 border focus:ring-1 ${errors.phoneNumber ? "border-red-500" : "border-gray-300"}`}
+                style={{
+                  width: "350px",
+                  height: "56px",
+                  borderRadius: "12px",
+                  borderWidth: "1px",
+                }}
+                className="px-4 py-2 border border-gray-300 focus:ring-1"
                 value={formData.phoneNumber}
                 onChange={handleChange}
               />
-              {errors.phoneNumber && <p className="text-red-500 text-sm mt-1">{errors.phoneNumber}</p>}
             </div>
 
             {/* PASSWORD */}
-            {/* PASSWORD */}
-<div className="relative">
-  <h4 className="mb-1" style={{ fontFamily: "Poppins", fontWeight: 400, fontSize: "16px", color: "#666666" }}>
-    Password
-  </h4>
-  <input
-    type={showPassword ? "text" : "password"}
-    name="password"
-    placeholder="Min 6 characters"
-    style={{
-      width: "350px",
-      height: "56px",
-      borderRadius: "12px",
-      borderWidth: "1px",
-      paddingRight: "45px", // space for the eye icon
-    }}
-    className={`px-4 py-2 border focus:ring-1 ${errors.password ? "border-red-500" : "border-gray-300"}`}
-    value={formData.password}
-    onChange={handleChange}
-  />
-  <button
-    type="button"
-    onClick={() => togglePasswordVisibility("password")}
-    className="absolute"
-    style={{
-      top: "70%", 
-      right: "1px",
-      transform: "translateY(-60%)", // vertically center
-      color: "#73725E",
-    }}
-  >
-    {showPassword ? <FaEyeSlash /> : <FaEye />}
-  </button>
+            <div className="relative">
+              <h4 className="mb-1 text-[#666]" style={{ fontFamily: "Poppins" }}>
+                Password
+              </h4>
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                style={{
+                  width: "350px",
+                  height: "56px",
+                  borderRadius: "12px",
+                  borderWidth: "1px",
+                  paddingRight: "45px",
+                }}
+                className="px-4 py-2 border border-gray-300 focus:ring-1"
+                value={formData.password}
+                onChange={handleChange}
+              />
 
-</div>
+              <button
+                type="button"
+                onClick={() => togglePasswordVisibility("password")}
+                className="absolute"
+                style={{
+                  top: "70%",
+                  right: "1px",
+                  transform: "translateY(-60%)",
+                  color: "#73725E",
+                }}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
 
-{/* CONFIRM PASSWORD */}
-<div className="relative">
-  <h4 className="mb-2" style={{ fontFamily: "Poppins", fontWeight: 400, fontSize: "16px", color: "#666666" }}>
-    Confirm Password
-  </h4>
-  <input
-    type={showConfirmPassword ? "text" : "password"}
-    name="confirmPassword"
-    placeholder="Re-enter Password"
-    style={{
-      width: "350px",
-      height: "56px",
-      borderRadius: "12px",
-      borderWidth: "1px",
-      paddingRight: "45px", // space for the eye icon
-    }}
-    className={`px-4 py-2 border focus:ring-1 ${errors.confirmPassword ? "border-red-500" : "border-gray-300"}`}
-    value={formData.confirmPassword}
-    onChange={handleChange}
-  />
-  <button
-    type="button"
-    onClick={() => togglePasswordVisibility("confirmPassword")}
-   className="absolute"
-    style={{
-      top: "70%", 
-      right: "1px",
-      transform: "translateY(-60%)", // vertically center
-      color: "#73725E",
-    }}
-  >
-    {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-  </button>
-  {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>}
-</div>
+            {/* CONFIRM PASSWORD */}
+            <div className="relative">
+              <h4 className="mb-1 text-[#666]" style={{ fontFamily: "Poppins" }}>
+                Confirm Password
+              </h4>
 
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                name="confirmPassword"
+                style={{
+                  width: "350px",
+                  height: "56px",
+                  borderRadius: "12px",
+                  borderWidth: "1px",
+                  paddingRight: "45px",
+                }}
+                className="px-4 py-2 border border-gray-300 focus:ring-1"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+              />
+
+              <button
+                type="button"
+                onClick={() => togglePasswordVisibility("confirmPassword")}
+                className="absolute"
+                style={{
+                  top: "70%",
+                  right: "1px",
+                  transform: "translateY(-60%)",
+                  color: "#73725E",
+                }}
+              >
+                {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
 
             {/* CHECKBOX */}
             <div className="flex items-center">
-              <input type="checkbox" name="isAdult" checked={formData.isAdult} onChange={handleChange} className="mr-2 h-4 w-4" />
-              <label style={{ fontFamily: "Poppins", fontWeight: 400, fontSize: "16px", color: "#73725E" }}>
-                I am 18 years or older
+              <input
+                type="checkbox"
+                name="isAdult"
+                checked={formData.isAdult}
+                onChange={handleChange}
+                className="mr-2 h-4 w-4"
+              />
+              <label
+                style={{
+                  fontFamily: "Poppins",
+                  fontSize: "16px",
+                  color: "#73725E",
+                }}
+              >
+                I am 18 or older
               </label>
-              {errors.isAdult && <p className="text-red-500 text-sm mt-1">{errors.isAdult}</p>}
             </div>
 
-            {/* SUBMIT */}
+            {/* SIGN UP BUTTON */}
             <button
               type="submit"
               disabled={loading}
-              style={{ width: "350px", height: "56px", borderRadius: "4px", backgroundColor: "#8B7D4F", fontFamily: "Poppins", fontWeight: 600, fontSize: "18px" }}
-              className="text-white mt-2 transition"
+              style={{
+                width: "350px",
+                height: "56px",
+                borderRadius: "4px",
+                backgroundColor: "#8B7D4F",
+                fontFamily: "Poppins",
+                fontWeight: 600,
+                fontSize: "18px",
+                borderRadius:'12px'
+              }}
+              className="text-white mt-2"
             >
               {loading ? "Creating Account…" : "Sign Up"}
             </button>
           </form>
 
-          {/* SOCIAL LOGIN */}
-          <div className="flex justify-center gap-5 mt-8">
-            <button className="w-14 h-14 flex items-center justify-center rounded-full hover:shadow-md bg-[#EFEEEB]">
+          {/* SOCIAL BUTTONS */}
+          <div className="flex justify-center gap-10 mt-10">
+            <button className="w-14 h-14 bg-[#EFEEEB] rounded-full flex items-center justify-center hover:shadow-md">
               <GoogleIcon width={26} height={26} />
             </button>
-            <button className="w-14 h-14 flex items-center justify-center rounded-full hover:shadow-md bg-[#EFEEEB]">
+
+            <button className="w-14 h-14 bg-[#EFEEEB] rounded-full flex items-center justify-center hover:shadow-md">
               <AppleIcon width={26} height={26} />
             </button>
-            <button className="w-14 h-14 flex items-center justify-center rounded-full hover:shadow-md bg-[#EFEEEB]">
+
+            <button className="w-14 h-14 bg-[#EFEEEB] rounded-full flex items-center justify-center hover:shadow-md">
               <FacebookIcon width={32} height={32} />
             </button>
           </div>
 
-          <p className="text-center text-sm mt-6">
-            <Link to="/login" className="text-gray-600 hover:underline">
-              Already have an account? Login
-            </Link>
-          </p>
+          {/* LOGIN LINK */}
+          <p className="text-center text-sm mt-6 flex justify-center items-center gap-2">
+  <Link to="/login" className="text-gray-600 hover:underline flex items-center gap-2">
+    <svg
+      width="18"
+      height="14"
+      viewBox="0 0 18 14"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M16.75 6.75L0.75 6.75M0.75 6.75L6.75 0.75M0.75 6.75L6.75 12.75"
+        stroke="#73725E"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+
+    Back to Login
+  </Link>
+</p>
+
         </div>
       </div>
     </div>

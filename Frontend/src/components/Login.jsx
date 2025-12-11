@@ -5,6 +5,7 @@ import backgroundimage from "../Assets/LoginBackgroundimage.webp";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { GoogleIcon, AppleIcon, FacebookIcon } from "./SocialIcons";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 
 const Login = () => {
@@ -25,7 +26,7 @@ const Login = () => {
 
   try {
     const res = await axios.post(
-  `${process.env.REACT_APP_API_BASE_URL}${process.env.REACT_APP_LOGIN_ENDPOINT}`,
+  `${process.env.REACT_APP_API_BASE_URL}/api/accounts/login/`,
   {
     identifier: email,
     password: password,
@@ -70,7 +71,7 @@ const Login = () => {
     className="min-h-screen w-full flex justify-center items-center"
     style={{
     backgroundImage: `
-      linear-gradient(rgba(246,246,246,0.5), rgba(246,246,246,0.5)),
+      linear-gradient(rgba(246,246,246,0.3), rgba(246,246,246,0.3)),
       url(${backgroundimage})
     `,
     backgroundSize: "cover",
@@ -295,9 +296,12 @@ const Login = () => {
 {/* Signup */}
 <p className="text-center text-sm text-gray-600 mb-6">
   Don't have an account?{" "}
-  <a href="/signup" className="font-medium border-b border-gray-800">
+  <Link
+    to="/signup"
+    className="font-medium border-b border-gray-800"
+  >
     Sign up
-  </a>
+  </Link>
 </p>
 
         </div>
