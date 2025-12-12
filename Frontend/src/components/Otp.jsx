@@ -11,8 +11,8 @@ const Otp = () => {
   const inputRefs = useRef([]);
   const { state } = useLocation(); // { input, type, userId } from Forget page
   const navigate = useNavigate();
-     // ✅ Added for storing user_id
-  
+  // ✅ Added for storing user_id
+
 
   // TIMER
   useEffect(() => {
@@ -35,31 +35,38 @@ const Otp = () => {
     if (value && index < 3) inputRefs.current[index + 1].focus();
   };
 
-    const verifyOtp = async () => {
-    const finalOtp = otp.join("");
-    if (finalOtp.length < 4) return alert("Enter complete OTP");
+  const verifyOtp = async () => {
+  const finalOtp = otp.join("");
+  if (finalOtp.length < 4) return alert("Enter complete OTP");
 
-    setLoading(true);
-    try {
-      const res = await axios.post("http://127.0.0.1:8000/api/accounts/verify-otp/", {
+  setLoading(true);
+  try {
+    const res = await axios.post(
+      `${process.env.REACT_APP_API_BASE_URL}/api/accounts/verify-otp/`,
+      {
         otp: finalOtp,
-        // assuming backend can identify user from email/phone in state
         email: state.type === "email" ? state.input : undefined,
         phone_number: state.type === "phone" ? state.input : undefined,
-      });
+      }
+    );
 
-      // Save user_id to localStorage
-      localStorage.setItem("reset_user_id", res.data.user_id);
-      alert("OTP verified successfully!");
+    // ✅ Store the reset token for NewPassword page
+    localStorage.setItem("reset_token", res.data.reset_token);
 
-      // Navigate to NewPassword page
-      navigate("/new-password");
-    } catch (err) {
-      alert(err.response?.data?.error || "Invalid OTP");
-    } finally {
-      setLoading(false);
-    }
-  };
+    // Optional: store user_id if needed
+    localStorage.setItem("reset_user_id", res.data.user_id);
+
+    alert("OTP verified successfully!");
+
+    // Navigate to NewPassword page
+    navigate("/new-password");
+  } catch (err) {
+    alert(err.response?.data?.error || "Invalid OTP");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const resendOtp = async () => {
     setTimeLeft(300);
@@ -69,7 +76,7 @@ const Otp = () => {
         : { phone_number: state.input };
 
       const res = await axios.post(
-        "http://127.0.0.1:8000/api/accounts/forgot-password/",
+         `${process.env.REACT_APP_API_BASE_URL}/api/accounts/forgot-password/`,
         payload,
         { headers: { "Content-Type": "application/json" } }
       );
@@ -85,75 +92,126 @@ const Otp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex justify-center items-start pt-16 px-4">
-      <div className="bg-white rounded-[4px] flex justify-center items-start relative" style={{ width: "580px", height: "600px " }}>
-        <button onClick={() => window.history.back()} className="absolute top-6 left-6 p-2 rounded-full hover:bg-gray-100 transition">
-          <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path fillRule="evenodd" clipRule="evenodd" d="M15 30C6.7155 30 0 23.2845 0 15C0 6.7155 6.7155 0 15 0C23.2845 0 30 6.7155 30 15C30 23.2845 23.2845 30 15 30ZM15 28.2C18.5009 28.2 21.8583 26.8093 24.3338 24.3338C26.8093 21.8583 28.2 18.5009 28.2 15C28.2 11.4991 26.8093 8.14167 24.3338 5.66619C21.8583 3.19071 18.5009 1.8 15 1.8C11.4991 1.8 8.14167 3.19071 5.66619 5.66619C3.19071 8.14167 1.8 11.4991 1.8 15C1.8 18.5009 3.19071 21.8583 5.66619 24.3338C8.14167 26.8093 11.4991 28.2 15 28.2ZM17.9985 20.1555L16.4295 21.75L10.935 16.0845C10.6554 15.7927 10.4993 15.4042 10.4993 15C10.4993 14.5958 10.6554 14.2073 10.935 13.9155L16.4295 8.25L18 9.8445L13.02 15L18 20.157L17.9985 20.1555Z" fill="#272612"/>
-          </svg>
-        </button>
-
-        <div className="bg-white rounded-[12px] flex flex-col items-center p-8" style={{ width: "398px", height: "599px", top:"213px" }}>
-          <div className="self-start mt-10 text-start">
-            <h1 className="text-[rgb(94,91,41)] text-3xl font-bold tracking-wider ">Univa</h1>
-            <p className="text-gray-600 font-medium">connect. create. commerce.</p>
-            <h2 className="text-2xl font-bold text-gray-800 mt-4">Two-Step Verification</h2>
-            <p className="text-sm text-gray-600 mb-2">
-              Enter the 4-digit code sent to your {state?.type}
-            </p>
-          </div>
-
-          {/* OTP Inputs */}
-          <div className="flex justify-between mt-2 w-full">
-            {otp.map((value, index) => (
-              <input
-                key={index}
-                ref={(el) => (inputRefs.current[index] = el)}
-                type="text"
-                value={value}
-                maxLength={1}
-                onChange={(e) => handleChange(e.target.value, index)}
-                className="w-14 h-14 text-center text-xl border-b-2 border-gray-400 focus:border-indigo-600 focus:scale-110 focus:outline-none transition-all duration-200"
-              />
-            ))}
-          </div>
-
-          {/* Verify Button */}
-          <button
-            onClick={verifyOtp}
-            disabled={timeLeft === 0 || loading}
-            className="w-full text-white py-3 rounded-lg mt-4 transition-all font-semibold"
-            style={{ backgroundColor: "#5E5B29" }}
-          >
-            {loading ? "Verifying..." : "Verify OTP"}
+    <div
+      className="w-full h-screen flex justify-center items-start"
+      style={{
+        backgroundColor: "#F6F6F6",
+        overflowX: "hidden",
+      }}
+    >
+      {/* Outer Card */}
+      <div className="w-full h-screen flex justify-center items-center">
+        <div
+          className="bg-white rounded-[4px] flex justify-center items-start relative"
+          style={{ width: "580px", minHeight: "884px" }}
+        >
+          <button onClick={() => window.history.back()} className="absolute top-6 left-6 p-2 rounded-full hover:bg-gray-100 transition">
+            <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fillRule="evenodd" clipRule="evenodd" d="M15 30C6.7155 30 0 23.2845 0 15C0 6.7155 6.7155 0 15 0C23.2845 0 30 6.7155 30 15C30 23.2845 23.2845 30 15 30ZM15 28.2C18.5009 28.2 21.8583 26.8093 24.3338 24.3338C26.8093 21.8583 28.2 18.5009 28.2 15C28.2 11.4991 26.8093 8.14167 24.3338 5.66619C21.8583 3.19071 18.5009 1.8 15 1.8C11.4991 1.8 8.14167 3.19071 5.66619 5.66619C3.19071 8.14167 1.8 11.4991 1.8 15C1.8 18.5009 3.19071 21.8583 5.66619 24.3338C8.14167 26.8093 11.4991 28.2 15 28.2ZM17.9985 20.1555L16.4295 21.75L10.935 16.0845C10.6554 15.7927 10.4993 15.4042 10.4993 15C10.4993 14.5958 10.6554 14.2073 10.935 13.9155L16.4295 8.25L18 9.8445L13.02 15L18 20.157L17.9985 20.1555Z" fill="#272612" />
+            </svg>
           </button>
 
-          {/* Timer */}
-          <div className="text-center text-sm text-gray-600 mt-6">
-            Expires in <span className="font-semibold text-red-500">{formatTime()}</span>
-          </div>
+          {/* Inner Card */}
+          <div className="bg-white rounded-[12px] flex flex-col items-center p-8" style={{ width: "398px", minHeight: "484px", marginTop: "111px" }}>
+            <div className="self-start mt-10 text-start">
+              <h1
+                className="font-poppins font-semibold text-[40px] leading-[100%] tracking-[0px] text-[rgb(94,91,41)]"
+              >
+                Univa
+              </h1>
+              <p
+                className="font-poppins font-normal text-[20px] leading-[100%] tracking-[0px] text-gray-600 mb-4 mt-6"
+              >
+                Connect. Create. Commerce.
+              </p>
+              <h2
+                className="font-poppins font-semibold text-[26px] leading-[100%] tracking-[0px] text-gray-800 mt-8"
+              >
+                Two-Step Verification
+              </h2>
 
-          {/* Resend OTP */}
-          <p className="text-center text-sm text-gray-600 mt-3">
-            Didn’t receive the code?{" "}
-            <button onClick={resendOtp} className="text-blue-600 font-semibold hover:underline">
-              Resend
-            </button>
-          </p>
+              <p
+                className="font-poppins font-normal text-[18px] leading-[100%] tracking-[0px] text-[#73725E] mb-2 mt-4"
+              >
+                We’ve Sent 4-Digit Code To Your Email. Please Enter Below.
+              </p>
 
-          {/* Show backend OTP for testing */}
-          {backendOtp && (
-            <p className="text-center text-green-600 mt-2 font-semibold">
-              OTP (for testing): {backendOtp}
+
+
+            </div>
+
+            {/* OTP Inputs */}
+            <div className="flex justify-between mt-2 w-full">
+              {otp.map((value, index) => (
+                <input
+                  key={index}
+                  ref={(el) => (inputRefs.current[index] = el)}
+                  type="text"
+                  value={value}
+                  maxLength={1}
+                  onChange={(e) => handleChange(e.target.value, index)}
+                  className="w-14 h-14 text-center text-xl border-b-2 border-gray-400 focus:border-indigo-600 focus:scale-110 focus:outline-none transition-all duration-200"
+                />
+              ))}
+            </div>
+            {/* Timer */}
+            <div className="text-center text-sm text-gray-600 mt-6">
+              Expires in <span className="font-semibold text-red-500">{formatTime()}</span>
+            </div>
+
+            {/* Resend OTP */}
+            <p className="text-center text-sm text-gray-600 mt-3 mb-8">
+              Didn’t receive the code?{" "}
+              <button onClick={resendOtp} className="text-blue-600 font-semibold hover:underline">
+                Resend
+              </button>
             </p>
-          )}
 
-          {/* Back to Login */}
-          <p className="text-center text-sm text-gray-600 mt-auto w-full">
-            <button onClick={() => navigate("/login")} className="font-semibold hover:underline">
-              ← Back to Login
+            {/* Verify Button */}
+            <button
+              onClick={verifyOtp}
+              disabled={timeLeft === 0 || loading}
+              className="w-full text-white py-3 rounded-lg mt-4 transition-all font-semibold mb-8"
+              style={{ backgroundColor: "#5E5B29" }}
+            >
+              {loading ? "Verifying..." : "Verify OTP"}
             </button>
-          </p>
+
+
+            {/* Show backend OTP for testing */}
+            {backendOtp && (
+              <p className="text-center text-green-600 mt-2 font-semibold">
+                OTP (for testing): {backendOtp}
+              </p>
+            )}
+
+            {/* Back to Login */}
+            <p className="w-full mt-auto text-center">
+              <button
+                onClick={() => navigate("/login")}
+                className="inline-flex items-center justify-center font-poppins font-normal text-[16px] leading-[100%] tracking-[0px] text-[#73725E] hover:underline"
+              >
+                <svg
+                  className="mr-4"
+                  width="18"
+                  height="14"
+                  viewBox="0 0 18 14"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M16.75 6.75L0.75 6.75M0.75 6.75L6.75 0.75M0.75 6.75L6.75 12.75"
+                    stroke="#73725E"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                Back to Login
+              </button>
+            </p>
+
+          </div>
         </div>
       </div>
     </div>

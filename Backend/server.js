@@ -5,24 +5,25 @@ require("dotenv").config();
 
 const app = express();
 
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "http://localhost:3000";
+
+app.use(cors({ origin: FRONTEND_ORIGIN, credentials: true }));
 app.use(express.json());
 
 // Routes
 const authRoutes = require("./routes/auth");
 const locationRoutes = require("./routes/location");
+const passwordRoutes = require("./routes/password");
 
-// /api/accounts/login, /api/accounts/signup, etc.
 app.use("/api/accounts", authRoutes);
-
-// /api/accounts/location/save/
 app.use("/api/accounts/location", locationRoutes);
+app.use("/api/accounts", passwordRoutes); // forgot-password, verify-otp, reset-password
 
 // DB Connection
 mongoose
-  .connect(process.env.MONGO_URI || "mongodb://127.0.0.1:27017/univa_db")
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.error("Mongo error:", err));
+  .catch(err => console.error("Mongo error:", err));
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

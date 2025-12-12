@@ -17,15 +17,21 @@ const ResetSuccess = () => {
   };
 
   return (
-   <div className="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex justify-center items-start pt-16 px-4">
+    <div
+      className="w-full h-screen flex justify-center items-start"
+      style={{
+        backgroundColor: "#F6F6F6",
+        overflowX: "hidden",
+      }}
+    >
 
-  <div
-    className="bg-white rounded-[4px] flex justify-center items-start relative"
-    style={{
-      width: "580px",
-      height: "884px",
-    }}
-  >
+   {/* Outer Card */}
+      <div className="w-full h-screen flex justify-center items-center">
+        <div
+          className="bg-white rounded-[4px] flex justify-center items-start relative"
+          style={{ width: "580px", minHeight: "884px" }}
+        >
+
 
     {/* Back Button */}
     <button
@@ -48,40 +54,43 @@ const ResetSuccess = () => {
       </svg>
     </button>
 
-    {/* White Box Inner */}
-    <div
-      className="bg-white rounded-[12px] flex flex-col items-center p-8 text-center"
-      style={{
-        width: "391px",
-        height: "567px",
-      }}
-    >
+    {/* Inner Card */}
+          <div className="bg-white rounded-[12px] flex flex-col items-center p-8" style={{ width: "398px", minHeight: "484px", marginTop: "111px" }}>
       {/* Logo */}
       <div className="self-start mt-8">
-        <h1 className="text-[rgb(94,91,41)] text-3xl font-bold tracking-wider text-start">
-          Univa
-        </h1>
-        <p className="text-gray-600 font-medium">connect. create. commerce.</p>
+       <h1
+                className="font-poppins font-semibold text-[40px] leading-[100%] tracking-[0px] text-[rgb(94,91,41)]"
+              >
+                Univa
+              </h1>
+        <p
+                className="font-poppins font-normal text-[20px] leading-[100%] tracking-[0px] text-gray-600 mb-4 mt-6"
+              >
+                Connect. Create. Commerce.
+              </p>
       </div>
 
-      {/* Success Icon */}
-      <div className="mt-6">
-        {true ? (
-          <div className="w-16 h-16 flex items-center justify-center rounded-full bg-blue-500 animate-bounce">
-            <span className="text-slate-950 text-3xl font-bold">✔</span>
-          </div>
-        ) : (
-          <div className="w-12 h-12 border-4 border-t-gray-500 border-gray-200 rounded-full animate-spin"></div>
-        )}
-      </div>
+    {/* Success Icon */}
+<div className="mt-6 flex justify-center items-center">
+  <img
+    src={require("../Assets/Checkmark.gif")} // adjust the path according to your folder structure
+    alt="Success"
+    className="w-36 h-36 object-contain"
+  />
+</div>
 
-      {/* Title */}
-      <h2 className="text-2xl font-bold text-gray-800 mb-4">
-        Password Reset Successfully!
-      </h2>
+
+
+    {/* Title */}
+<h2
+  className="font-poppins font-semibold text-[26px] leading-[100%] tracking-[0%] text-center text-gray-800 mb-4"
+>
+  Password Reset Successfully!
+</h2>
+
 
       {/* Description */}
-      <p className="text-sm text-gray-500 mb-10 leading-6">
+      <p className="text-sm text-gray-500 mb-10 mt-8 leading-6">
         Your password has been reset successfully. <br />
         You can now login with your new password.
       </p>
@@ -96,6 +105,7 @@ const ResetSuccess = () => {
       </button>
     </div>
   </div>
+</div>
 </div>
 
   );
