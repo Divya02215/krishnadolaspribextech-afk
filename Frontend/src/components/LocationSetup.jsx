@@ -21,6 +21,8 @@ const showMessage = (msg, isError = false) => {
 const LocationSetup = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const token = localStorage.getItem("access_token");
+
 
   const [pincode, setPincode] = useState("");
   const [coords, setCoords] = useState({ lat: null, lng: null });
@@ -102,7 +104,11 @@ const LocationSetup = () => {
           latitude: result.lat,
           longitude: result.lng,
           city: result.city,
-        });
+        },{
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },});
 
         if (res.status === 200) showMessage("Location saved to server successfully!");
       } else {
@@ -117,27 +123,44 @@ const LocationSetup = () => {
   };
 
   // ===== Axios handleSubmit =====
-  const handleSubmit = async (skip = false) => {
-    if (!skip && coords.lat && coords.lng && locationName) {
-      try {
-        const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/api/accounts/location/save/`, {
+ const handleSubmit = async (skip = false) => {
+  if (!skip && (!coords.lat || !coords.lng || !locationName)) {
+    showMessage("Please detect or enter your location before continuing.", true);
+    return;
+  }
+
+  if (!skip) {
+    try {
+      const res = await axios.post(
+        `${process.env.REACT_APP_API_BASE_URL}/api/accounts/location/save/`,
+        {
           latitude: coords.lat,
           longitude: coords.lng,
           city: locationName,
-        });
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-        if (res.status === 200) showMessage("Location saved to server successfully!");
-        else showMessage(res.data?.error || "Failed to save location on server.", true);
-      } catch (err) {
-        console.error(err);
-        showMessage(err.response?.data?.error || "Error connecting to server.", true);
+      if (res.status === 200) {
+        showMessage("Location saved to server successfully!");
       }
-    } else if (skip) {
-      showMessage("Skipped location setup.", false);
+    } catch (err) {
+      console.error(err);
+      showMessage(err.response?.data?.error || "Error connecting to server.", true);
+      return;
     }
+  } else {
+    showMessage("Skipped location setup.", false);
+  }
 
-    setTimeout(() => navigate("/login"), 1500);
-  };
+  setTimeout(() => navigate("/login"), 1500);
+};
+
 
   if (!location.state) return null;
 
@@ -226,6 +249,7 @@ const LocationSetup = () => {
   style={{
     marginTop: "16px",     // ⬅ space above
     fontFamily: "Poppins",
+    color: "#73725E",
   }}
 >
   Share your location to discover exclusive offers, events, and creators

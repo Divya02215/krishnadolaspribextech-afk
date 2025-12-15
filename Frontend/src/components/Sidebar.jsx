@@ -1,91 +1,97 @@
-// src/components/Sidebar.jsx (एडजस्टमेंट के साथ)
-import React from 'react';
-import { Home, ShoppingBag, Gift, PlusSquare, Compass, BarChart2, User, MoreHorizontal } from 'lucide-react';
+// src/components/Sidebar.jsx
+import React from "react";
+import {
+  Home,
+  ShoppingBag,
+  Gift,
+  PlusSquare,
+  Compass,
+  BarChart2,
+  User,
+  MoreHorizontal,
+} from "lucide-react";
+
+const menu = [
+  { label: "Home", icon: Home, active: true },
+  { label: "Ecommerce", icon: ShoppingBag },
+  { label: "Deals", icon: Gift },
+  { label: "Create", icon: PlusSquare },
+  { label: "Explore", icon: Compass },
+  { label: "Dashboard", icon: BarChart2 },
+  { label: "Profile", icon: User },
+];
 
 const Sidebar = () => {
-  return (
-   <div
-  className="fixed top-0 left-0 h-full w-64 bg-white z-30 flex flex-col"
+  return (
+    <div
+  className="h-full flex flex-col text-left"
   style={{
     width: "353px",
-    height: "802px",
-    left: "100px",
-    background: "rgba(255, 255, 255, 1)",
-    borderStyle: "solid",
-    borderColor: "rgba(115, 114, 94, 1)",
-    borderWidth: "0px 0.5px 0px 0.5px",
+    background: "white",
+    // borderLeft: "0.5px solid #73725E",
+    borderRight: "0.5px solid #73725E",
   }}
 >
 
-  <div className="flex items-center h-16 p-4" 
-       style={{ borderBottom: "0.5px solid rgba(115, 114, 94, 1)" }}>
-    <span className="text-2xl font-bold text-blue-600">Univa</span>
-  </div>
-
-  <nav className="flex-1 p-4">
-    <ul>
-      <li className="mb-4">
-        <a href="#" className="flex items-center text-blue-600 font-semibold p-2 rounded-lg bg-blue-50">
-          <Home className="w-5 h-5 mr-3" />
-          Home
-        </a>
-      </li>
-      
-      <li className="mb-4">
-        <a href="#" className="flex items-center text-gray-700 p-2 rounded-lg hover:bg-gray-100">
-          <ShoppingBag className="w-5 h-5 mr-3" />
-          Ecommerce
-        </a>
-      </li>
-
-      <li className="mb-4">
-        <a href="#" className="flex items-center text-gray-700 p-2 rounded-lg hover:bg-gray-100">
-          <Gift className="w-5 h-5 mr-3" />
-          Deals
-        </a>
-      </li>
-
-      <li className="mb-4">
-        <a href="#" className="flex items-center text-gray-700 p-2 rounded-lg hover:bg-gray-100">
-          <PlusSquare className="w-5 h-5 mr-3" />
-          Create
-        </a>
-      </li>
-
-      <li className="mb-4">
-        <a href="#" className="flex items-center text-gray-700 p-2 rounded-lg hover:bg-gray-100">
-          <Compass className="w-5 h-5 mr-3" />
-          Explore
-        </a>
-      </li>
-
-      <li className="mb-4">
-        <a href="#" className="flex items-center text-gray-700 p-2 rounded-lg hover:bg-gray-100">
-          <BarChart2 className="w-5 h-5 mr-3" />
-          Dashboard
-        </a>
-      </li>
-
-      <li className="mb-4">
-        <a href="#" className="flex items-center text-gray-700 p-2 rounded-lg hover:bg-gray-100">
-          <User className="w-5 h-5 mr-3" />
-          Profile
-        </a>
-      </li>
-    </ul>
-  </nav>
-
-  <div className="mt-auto p-4" 
-       style={{ borderTop: "0.5px solid rgba(115, 114, 94, 1)" }}>
-    <a href="#" className="flex items-center text-gray-700 p-2 rounded-lg hover:bg-gray-100">
-      <MoreHorizontal className="w-5 h-5 mr-3" />
-      More
-    </a>
-  </div>
-
+      {/* LOGO */}
+      {/* LOGO */}
+<div className="px-8 pt-8 pb-10">
+  <span className="font-poppins font-semibold text-[32px] text-[#5E5B29]">
+    Univa
+  </span>
 </div>
 
- );
+
+      {/* MENU */}
+      <nav className="flex-1 px-6">
+        <ul className="space-y-3">
+          {menu.map(({ label, icon: Icon, active }) => (
+            <li key={label}>
+              <button
+                className={`
+                  flex items-center gap-4
+                  h-[48px] px-5
+                  rounded-xl
+                  w-full
+                  text-[15px]
+                  transition
+                  ${
+                    active
+                      ? "bg-white shadow-sm text-[#1F1F1F] font-medium"
+                      : "text-[#7A7A7A] hover:bg-[#F2F2EC]"
+                  }
+                `}
+              >
+                <Icon
+                  size={20}
+                  className={active ? "text-[#1F1F1F]" : "text-[#9A9A9A]"}
+                />
+                <span>{label}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      {/* MORE */}
+      <div className="px-6 pb-6 mt-auto">
+        <button
+          className="
+            flex items-center gap-4
+            h-[48px] px-5
+            rounded-xl
+            w-full
+            text-[15px]
+            text-[#7A7A7A]
+            hover:bg-[#F2F2EC]
+          "
+        >
+          <MoreHorizontal size={20} className="text-[#9A9A9A]" />
+          <span>More</span>
+        </button>
+      </div>
+    </div>
+  );
 };
 
 export default Sidebar;

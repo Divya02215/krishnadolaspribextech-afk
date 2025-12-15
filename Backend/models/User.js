@@ -1,3 +1,4 @@
+// C:\MERN\Backend\models\User.js
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
@@ -12,6 +13,7 @@ const userSchema = new mongoose.Schema(
     is_adult: { type: Boolean, default: false },
     profile_completed: { type: Boolean, default: false },
     interests: { type: [String], default: [] },
+    dob: { type: Date }, // Added DOB field
   },
   { timestamps: true }
 );

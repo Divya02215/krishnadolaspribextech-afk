@@ -1,10 +1,10 @@
+// C:\MERN\Backend\server.js
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 require("dotenv").config();
 
 const app = express();
-
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "http://localhost:3000";
 
 app.use(cors({ origin: FRONTEND_ORIGIN, credentials: true }));
@@ -14,10 +14,12 @@ app.use(express.json());
 const authRoutes = require("./routes/auth");
 const locationRoutes = require("./routes/location");
 const passwordRoutes = require("./routes/password");
+const dobRoutes = require("./routes/dob");
 
 app.use("/api/accounts", authRoutes);
 app.use("/api/accounts/location", locationRoutes);
-app.use("/api/accounts", passwordRoutes); // forgot-password, verify-otp, reset-password
+app.use("/api/accounts", passwordRoutes);
+app.use("/api/accounts", dobRoutes); // Added DOB route
 
 // DB Connection
 mongoose

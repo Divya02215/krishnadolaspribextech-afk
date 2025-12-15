@@ -21,6 +21,7 @@ import ProfileSetup from "./components/Profile";  // Name must match file EXACTL
 import LocationSetup from "./components/LocationSetup";
 import ResetSuccess from "./components/ResetSuccess";
 import UserOnboardingSetup from "./components/UserOnboardingSetup";
+import Dob from './components/Dob';
 
 // Main Pages
 import HomePages from "./components/HomePages";
@@ -37,6 +38,7 @@ function App() {
         <Route path="/location-setup" element={<LocationSetup />} />
         <Route path="/user-onboarding-setup" element={<UserOnboardingSetup />} />
         <Route path="/reset-success" element={<ResetSuccess />} />
+        <Route path="/Dob" element={<Dob />} />
 
 
         <Route

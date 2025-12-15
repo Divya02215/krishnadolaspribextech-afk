@@ -176,25 +176,28 @@ const UserOnboardingSetup = () => {
 </div>
 
  <h2
-  className="mb-2 self-start text-black"
+  className="self-start mb-2"
   style={{
     width: "292px",
-    height: "30px",
+    height: "26px",
+
     fontFamily: "Poppins",
-    fontWeight: 800,
-    fontSize: "20px",
-    lineHeight: "100%",
+    fontWeight: 600,          // ✅ SemiBold
+    fontSize: "26px",         // ✅ Correct size
+    lineHeight: "100%",       // ✅ As specified
     letterSpacing: "0%",
     textTransform: "capitalize",
+
     color: "#272612",
     opacity: 1,
 
-    paddingTop: "20px",      // 🔥 added
-    paddingBottom: "20px",   // 🔥 added
+    paddingTop: "10px",
+    paddingBottom: "20px",
   }}
 >
-  Let’s get you started
+  Let’s Get You Started
 </h2>
+
 
 
 <p

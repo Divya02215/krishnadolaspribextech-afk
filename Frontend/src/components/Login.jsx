@@ -67,18 +67,26 @@ const Login = () => {
 
 
   return (
-    <div
-    className="min-h-screen w-full flex justify-center items-center"
-    style={{
-    backgroundImage: `
-      linear-gradient(rgba(246,246,246,0.3), rgba(246,246,246,0.3)),
-      url(${backgroundimage})
-    `,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
-  }}
-  >
+  //   <div
+  //   className="min-h-screen w-full flex justify-center items-center"
+  //   style={{
+  //   backgroundImage: `
+  //     linear-gradient(rgba(246,246,246,0.3), rgba(246,246,246,0.3)),
+  //     url(${backgroundimage})
+  //   `,
+  //   backgroundSize: "cover",
+  //   backgroundPosition: "center",
+  //   backgroundRepeat: "no-repeat",
+  // }}
+  // >
+
+  <div
+      className="min-h-screen w-full flex justify-center items-center"
+      style={{
+        backgroundColor: "#F6F6F6",
+        overflowX: "hidden",
+      }}
+    >
     {/* Outer white card – 580 x 884 */}
     <div
       className="bg-white rounded-[4px] relative flex justify-center items-center"

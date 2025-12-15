@@ -1,26 +1,48 @@
-/* Import Poppins from Google Fonts */
+/* ============================
+   Import Poppins Font
+============================ */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@600&display=swap");
 
-/* Tailwind base (keep imports near top, but after font import is fine) */
+
+/* ============================
+   Tailwind Base
+============================ */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Global font + smoothing */
+/* ============================
+   Global Reset + Layout Fix
+============================ */
+html,
 body {
+  width: 100%;
+  height: 100%;
   margin: 0;
+  padding: 0;
+
+  /* 🔥 CRITICAL: prevents horizontal & vertical scroll */
+  overflow: hidden;
+
   font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
     "Droid Sans", "Helvetica Neue", sans-serif;
+
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ============================
+   Code Font
+============================ */
 code {
   font-family: "Poppins", Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
-/* Loader styles */
+/* ============================
+   Loader Styles
+============================ */
 .loader {
   border: 4px solid #f3f3f3;
   border-top: 4px solid black;
@@ -34,4 +56,31 @@ code {
   100% {
     transform: rotate(360deg);
   }
+}
+
+/* ============================
+   Hide Scrollbars (GLOBAL)
+============================ */
+
+/* Firefox */
+* {
+  scrollbar-width: none;
+}
+
+/* Chrome, Safari, Edge */
+*::-webkit-scrollbar {
+  display: none;
+}
+
+/* ============================
+   Optional Utility Class
+   (Use on specific elements)
+============================ */
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE & Edge */
+  scrollbar-width: none;    /* Firefox */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;            /* Chrome */
 }
