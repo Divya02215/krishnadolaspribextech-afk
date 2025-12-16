@@ -83,21 +83,24 @@ const HomePages = () => {
           </div>
         </aside>
 
-        {/* CENTER FEED */}
-        <section className="flex flex-col min-h-screen">
-          <FixedHeader
-            onNotifications={() => openPanel(setShowNotifications)}
-            onChat={() => openPanel(setShowChat)}
-          />
+       {/* CENTER FEED */}
+<section className="flex flex-col h-screen w-full">
+  <FixedHeader
+    onNotifications={() => openPanel(setShowNotifications)}
+    onChat={() => openPanel(setShowChat)}
+  />
 
-          <main className="flex-1 overflow-y-auto">
-            <div className="mx-auto max-w-[900px] px-2 pb-10">
-              <Suspense fallback={<p>Loading feed...</p>}>
-                <Feed />
-              </Suspense>
-            </div>
-          </main>
-        </section>
+  {/* SCROLLABLE FEED AREA */}
+  <main className="flex-1 overflow-y-auto">
+    {/* FULL WIDTH FEED CONTAINER */}
+    <div className="w-full px-8 pb-10">
+      <Suspense fallback={<p>Loading feed...</p>}>
+        <Feed />
+      </Suspense>
+    </div>
+  </main>
+</section>
+
 
         {/* RIGHT SIDEBAR */}
         <aside

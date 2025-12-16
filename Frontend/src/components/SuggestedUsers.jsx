@@ -18,7 +18,7 @@ const SuggestionRow = ({ id, name, mutuals, avatar, initFollowing, refreshList }
 
     try {
       await axios.post(
-        `http://127.0.0.1:8000/api/accounts/follow/${id}/`,
+        `${process.env.REACT_APP_API_BASE_URL}/api/accounts/follow/${id}/`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -78,7 +78,7 @@ const SuggestedUsers = () => {
 
     try {
       const res = await axios.get(
-        "http://127.0.0.1:8000/api/accounts/suggestions/",
+        `${process.env.REACT_APP_API_BASE_URL}/api/accounts/suggestions/`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -107,29 +107,42 @@ const SuggestedUsers = () => {
   const visible = showAll ? suggestions : suggestions.slice(0, 4);
 
   return (
-    <div className="bg-white p-4 rounded-xl shadow-lg border border-gray-100">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="font-bold text-lg text-gray-800">Suggested</h3>
-        {suggestions.length > 4 && (
-          <button
-            onClick={() => setShowAll((prev) => !prev)}
-            className="text-sm font-semibold text-gray-500 hover:text-gray-700"
-          >
-            {showAll ? "Show Less" : "See All"}
-          </button>
-        )}
-      </div>
+   <div className="bg-white p-4 rounded-xl shadow-lg border border-gray-100">
+  {/* HEADER */}
+ <div className="flex items-center justify-between mb-2">
+  <h3 className="font-semibold text-base text-black">
+    Suggested
+  </h3>
 
-      <div className="space-y-3">
-        {visible.map((user) => (
-          <SuggestionRow
-            key={user.id}
-            {...user}
-            refreshList={fetchSuggestions}
-          />
-        ))}
+  {suggestions.length > 4 && (
+    <span
+      onClick={() => setShowAll((prev) => !prev)}
+      className="text-sm text-gray-500 cursor-pointer select-none"
+    >
+      {showAll ? "Show Less" : "See All"}
+    </span>
+  )}
+</div>
+
+
+  {/* LIST */}
+  <div>
+    {visible.map((user, index) => (
+      <div
+        key={user.id}
+        className={`${
+          index !== visible.length - 1 ? "border-b border-gray-200" : ""
+        }`}
+      >
+        <SuggestionRow
+          {...user}
+          refreshList={fetchSuggestions}
+        />
       </div>
-    </div>
+    ))}
+  </div>
+</div>
+
   );
 };
 

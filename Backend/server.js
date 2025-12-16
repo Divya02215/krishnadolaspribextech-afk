@@ -1,4 +1,3 @@
-// C:\MERN\Backend\server.js
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -8,20 +7,26 @@ const app = express();
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "http://localhost:3000";
 
 app.use(cors({ origin: FRONTEND_ORIGIN, credentials: true }));
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 
 // Routes
 const authRoutes = require("./routes/auth");
 const locationRoutes = require("./routes/location");
 const passwordRoutes = require("./routes/password");
 const dobRoutes = require("./routes/dob");
+const storyRoutes = require("./routes/story");
+const suggestionRoutes = require("./routes/suggestions");
+const followRoutes = require("./routes/follow");
 
 app.use("/api/accounts", authRoutes);
 app.use("/api/accounts/location", locationRoutes);
 app.use("/api/accounts", passwordRoutes);
-app.use("/api/accounts", dobRoutes); // Added DOB route
+app.use("/api/accounts", dobRoutes);
+app.use("/api/accounts", storyRoutes);
+app.use("/api/accounts", suggestionRoutes);
+app.use("/api/accounts", followRoutes);
 
-// DB Connection
+// DB
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))

@@ -26,20 +26,20 @@ const Login = () => {
 
   try {
     const res = await axios.post(
-  `${process.env.REACT_APP_API_BASE_URL}/api/accounts/login/`,
-  {
-    identifier: email,
-    password: password,
-  }
-);
+      `${process.env.REACT_APP_API_BASE_URL}/api/accounts/login/`,
+      {
+        identifier: email,
+        password: password,
+      }
+    );
 
-
-    if (res.data.user) {
+    if (res.data.user && res.data.user.token) {
       console.log("Login Successful!", res.data.user);
       alert(`Login successful! Welcome ${res.data.user.email}`);
 
-      // Save user
+      // Save user and token
       localStorage.setItem("user", JSON.stringify(res.data.user));
+      localStorage.setItem("access_token", res.data.user.token);
 
       // ✅ Navigate to Home Page
       navigate("/home-pages");
@@ -63,6 +63,8 @@ const Login = () => {
     setIsLoading(false);
   }
 };
+
+
 
 
 
