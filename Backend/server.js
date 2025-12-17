@@ -17,6 +17,9 @@ const dobRoutes = require("./routes/dob");
 const storyRoutes = require("./routes/story");
 const suggestionRoutes = require("./routes/suggestions");
 const followRoutes = require("./routes/follow");
+const shareRoutes = require("./routes/share");
+const feedRoutes = require("./routes/feed");
+const messageRoutes = require("./routes/message");
 
 app.use("/api/accounts", authRoutes);
 app.use("/api/accounts/location", locationRoutes);
@@ -25,12 +28,15 @@ app.use("/api/accounts", dobRoutes);
 app.use("/api/accounts", storyRoutes);
 app.use("/api/accounts", suggestionRoutes);
 app.use("/api/accounts", followRoutes);
+app.use("/api/accounts", shareRoutes);
+app.use("/api", feedRoutes);
+app.use("/api/messages", messageRoutes);
 
 // DB
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
-  .catch(err => console.error("Mongo error:", err));
+  .catch((err) => console.error("Mongo error:", err));
 
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

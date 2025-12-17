@@ -1,28 +1,10 @@
-// src/pages/Feed.jsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { Play } from "lucide-react";
 
 import ShareModal from "../components/ShareModal";
 import CommentsPanel from "../components/CommentsPanel";
 import { LikeIcon, CommentIcon } from "../components/CustomHeartIcon";
-
-/* ========================= REPLY FUNCTION ========================= */
-const handleReplyAdd = (postId, commentIndex, reply, setPosts) => {
-  setPosts((prev) =>
-    prev.map((p) =>
-      p.id === postId
-        ? {
-            ...p,
-            comments: p.comments.map((c, i) =>
-              i === commentIndex
-                ? { ...c, replies: [...(c.replies || []), reply] }
-                : c
-            ),
-          }
-        : p
-    )
-  );
-};
 
 /* ========================= SHARE BUTTON ========================= */
 const ShareButton = ({ onClick }) => (
@@ -58,106 +40,41 @@ const BookmarkButton = () => (
 
 /* ========================= MAIN FEED ========================= */
 const Feed = () => {
-  const initialPosts = [
-    {
-      id: 1,
-      type: "image",
-      caption: "Some days feel like a soft reset…",
-      imageUrl: "https://picsum.photos/500/400?1",
-      likes: 12,
-      commentsCount: 8,
-      shares: 5,
-      comments: [],
-      liked: false,
-      creator: "Johndoe_Creates",
-      time: "2 Hours Ago",
-      avatar: "https://i.pravatar.cc/40?img=1",
-    },
-    {
-      id: 2,
-      type: "video",
-      caption: "Peaceful moments 🎄",
-      videoUrl: "https://www.w3schools.com/html/mov_bbb.mp4",
-      likes: 12,
-      commentsCount: 8,
-      shares: 5,
-      comments: [],
-      liked: false,
-      creator: "Johndoe_Creates",
-      time: "2 Hours Ago",
-      avatar: "https://i.pravatar.cc/40?img=2",
-    },
-    {
-      id: 3,
-      type: "image",
-      caption: "Cold coffee kind of day ☕",
-      imageUrl: "https://picsum.photos/500/400?3",
-      likes: 12,
-      commentsCount: 8,
-      shares: 5,
-      comments: [],
-      liked: false,
-      creator: "Johndoe_Creates",
-      time: "2 Hours Ago",
-      avatar: "https://i.pravatar.cc/40?img=3",
-    },
-    {
-      id: 4,
-      type: "image",
-      caption: "Sleep is therapy 💤",
-      imageUrl: "https://picsum.photos/500/400?4",
-      likes: 12,
-      commentsCount: 8,
-      shares: 5,
-      comments: [],
-      liked: false,
-      creator: "Johndoe_Creates",
-      time: "2 Hours Ago",
-      avatar: "https://i.pravatar.cc/40?img=4",
-    },
-    {
-  id: 5,
-  type: "image",
-  caption: "Chasing sunsets 🌅",
-  imageUrl: "https://picsum.photos/500/400?5",
-  likes: 9,
-  commentsCount: 4,
-  shares: 2,
-  comments: [],
-  liked: false,
-  creator: "Johndoe_Creates",
-  time: "3 Hours Ago",
-  avatar: "https://i.pravatar.cc/40?img=5",
-},
-{
-  id: 6,
-  type: "image",
-  caption: "Weekend vibes only ✨",
-  imageUrl: "https://picsum.photos/500/400?6",
-  likes: 18,
-  commentsCount: 11,
-  shares: 6,
-  comments: [],
-  liked: false,
-  creator: "Johndoe_Creates",
-  time: "4 Hours Ago",
-  avatar: "https://i.pravatar.cc/40?img=6",
-},
-  ];
-
-  const [posts, setPosts] = useState(initialPosts);
+  const [posts, setPosts] = useState([]);
   const [activeCommentsPost, setActiveCommentsPost] = useState(null);
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState(null);
 
-  const handleToggleLike = (id) => {
+  /* ========================= FETCH FEED ========================= */
+  useEffect(() => {
+    const fetchFeed = async () => {
+      try {
+        const token = localStorage.getItem("access_token");
+
+        const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/feed/`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setPosts(res.data);
+      } catch (err) {
+        console.error("Failed to load feed", err);
+      }
+    };
+
+    fetchFeed();
+  }, []);
+
+  /* ========================= LIKE TOGGLE (UI ONLY FOR NOW) ========================= */
+  const handleToggleLike = (postId) => {
     setPosts((prev) =>
       prev.map((p) =>
-        p.id === id
+        p._id === postId
           ? {
               ...p,
-              liked: !p.liked,
-              likes: p.liked ? p.likes - 1 : p.likes + 1,
+              likedByMe: !p.likedByMe,
+              likes: p.likedByMe ? p.likes - 1 : p.likes + 1,
             }
           : p
       )
@@ -166,78 +83,76 @@ const Feed = () => {
 
   return (
     <div className="w-full bg-[#fafafa]">
-
       <div className={`${activeCommentsPost ? "blur-sm pointer-events-none" : ""}`}>
         <div className="grid grid-cols-3 gap-4 p-4">
           {posts.map((post) => (
             <div
-              key={post.id}
+              key={post._id}
               className="bg-white rounded-2xl shadow-sm overflow-hidden"
             >
               {/* HEADER */}
-              <div className="flex items-center justify-between px-3 py-2">
-                <div className="flex items-center gap-2">
-                  <img
-                    src={post.avatar}
-                    alt="avatar"
-                    className="w-8 h-8 rounded-full object-cover"
-                  />
-                  <div>
-                    <p className="text-sm font-semibold">{post.creator}</p>
-                    <p className="text-xs text-gray-500">{post.time}</p>
-                  </div>
+              <div className="flex items-center gap-2 px-3 py-2">
+                <img
+                  src={post.creator?.avatar}
+                  className="w-8 h-8 rounded-full"
+                  alt=""
+                />
+                <div>
+                  <p className="text-sm font-semibold">
+                    {post.creator?.username}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    {new Date(post.createdAt).toLocaleString()}
+                  </p>
                 </div>
-                {/* <button className="text-xl font-bold text-gray-600">⋯</button> */}
               </div>
 
               {/* MEDIA */}
               {post.type === "image" ? (
                 <img
-                  src={post.imageUrl}
+                  src={post.media}
                   className="w-full h-[240px] object-cover"
+                  alt=""
                 />
               ) : (
-                <div className="w-full h-[240px] bg-black flex items-center justify-center cursor-pointer">
+                <div className="w-full h-[240px] bg-black flex items-center justify-center">
                   <Play className="w-12 h-12 text-white" />
                 </div>
               )}
 
-              {/* DESCRIPTION + 3 DOTS */}
-              <div className="flex justify-between items-start px-4 pt-3">
-                <p className="text-sm text-gray-800 pr-2">
-                  {post.caption}
-                </p>
-                <button className="text-lg font-bold text-gray-600">⋯</button>
-              </div>
+              {/* CAPTION */}
+              {post.caption && (
+                <p className="px-4 pt-3 text-sm">{post.caption}</p>
+              )}
 
-              {/* ACTION BUTTONS (INLINE COUNTS) */}
+              {/* ACTIONS */}
               <div className="flex justify-between items-center px-4 py-3 text-sm">
-                <div className="flex items-center gap-10">
-                  <div className="flex items-center gap-1 cursor-pointer">
+                <div className="flex gap-10">
+                  <div className="flex gap-1 cursor-pointer">
                     <LikeIcon
                       size={18}
-                      fill={post.liked ? "red" : "black"}
-                      onClick={() => handleToggleLike(post.id)}
+                      fill={post.likedByMe ? "red" : "black"}
+                      onClick={() => handleToggleLike(post._id)}
                     />
-                    <span>{post.likes}</span>
+                    {post.likes || 0}
                   </div>
 
                   <div
-                    className="flex items-center gap-1 cursor-pointer"
+                    className="flex gap-1 cursor-pointer"
                     onClick={() => setActiveCommentsPost(post)}
                   >
                     <CommentIcon size={18} fill="black" />
-                    <span>{post.commentsCount}</span>
+                    {post.commentsCount || 0}
                   </div>
 
-                  <div className="flex items-center gap-1 cursor-pointer">
+                  <div className="flex gap-1 cursor-pointer">
                     <ShareButton
                       onClick={() => {
-                        setSelectedPostId(post.id);
+                        setSelectedPostId(post._id);
                         setIsShareOpen(true);
                       }}
                     />
-                    <span>{post.shares}</span>
+                    {post.shares || 0}
                   </div>
                 </div>
 
@@ -248,27 +163,13 @@ const Feed = () => {
         </div>
       </div>
 
-      {/* COMMENTS PANEL */}
       {activeCommentsPost && (
         <CommentsPanel
           post={activeCommentsPost}
           onClose={() => setActiveCommentsPost(null)}
-          onCommentAdd={(postId, comment) =>
-            setPosts((prev) =>
-              prev.map((p) =>
-                p.id === postId
-                  ? { ...p, comments: [...p.comments, comment] }
-                  : p
-              )
-            )
-          }
-          onReplyAdd={(postId, commentIndex, reply) =>
-            handleReplyAdd(postId, commentIndex, reply, setPosts)
-          }
         />
       )}
 
-      {/* SHARE MODAL */}
       <ShareModal
         isOpen={isShareOpen}
         onClose={() => setIsShareOpen(false)}

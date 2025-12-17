@@ -27,45 +27,71 @@ const NotificationPage = ({ setShowNotifications }) => {
     { user: "Nature_lover", img: 35 },
   ];
 
-  const NotificationItem = ({ data, isMention }) => (
-    <div
-      className={`flex items-center justify-between p-2 rounded-md hover:bg-gray-50 ${
-        isMention ? "w-[321px] h-[60px] bg-[#FAF9F9] rounded-[14px]" : ""
-      }`}
-    >
-      <div className="flex items-center space-x-3">
-        {isMention ? (
-          data.svg ? (
-            <div className="w-10 h-10 rounded-full border overflow-hidden flex items-center justify-center bg-gray-200">
-              <svg width="32" height="35" viewBox="0 0 39 43" xmlns="http://www.w3.org/2000/svg">
-                <path d="M37.9 31V11L19.46 1C13.30 4.33 1 11 1 11C1 11 1 24 1 31L19.47 41L37.94 31Z" fill="#D9D9D9" />
-              </svg>
-            </div>
-          ) : (
-            <img
-              src={`https://i.pravatar.cc/150?img=${data.img || 10}`}
-              className="w-10 h-10 rounded-full object-cover border"
-            />
-          )
-        ) : (
-          <img
-            src={`https://i.pravatar.cc/150?img=${Math.floor(Math.random() * 70) + 1}`}
-            className="w-10 h-10 rounded-full object-cover"
-          />
-        )}
+ const NotificationItem = ({ data }) => {
+  return (
+    <div className="relative w-[315px] h-[67px] mx-auto mb-3">
+      
+      {/* SVG BACKGROUND */}
+      <svg
+        width="315"
+        height="67"
+        viewBox="0 0 315 67"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="absolute inset-0"
+      >
+        <path
+          d="M14.5946 5.71043C16.6327 2.32564 20.2949 0.255859 24.2459 0.255859H290.082C294.033 0.255859 297.696 2.32564 299.734 5.71043L312.458 26.8424C314.585 30.3753 314.612 34.7881 312.528 38.3466L299.713 60.2292C297.692 63.6809 293.991 65.8019 289.991 65.8019H24.3368C20.3368 65.8019 16.6368 63.6808 14.6154 60.2292L1.80063 38.3466C-0.283304 34.7881 -0.256393 30.3753 1.87078 26.8424L14.5946 5.71043Z"
+          fill="white"
+          stroke="#E8ECE9"
+          strokeWidth="0.512078"
+        />
+      </svg>
 
-        <p className="text-sm">
-          <span className="font-bold">{data.user}</span>{" "}
-          <span className="text-gray-700">{data.text}</span>
-        </p>
+      {/* CONTENT */}
+      <div className="relative z-10 flex items-center h-full px-4 justify-between">
+        
+        {/* LEFT */}
+        <div className="flex items-center gap-3">
+          <img
+            src={`https://i.pravatar.cc/100?img=${Math.floor(Math.random() * 70) + 1}`}
+            className="w-10 h-10 rounded-full object-cover"
+            alt="user"
+          />
+
+          <div className="text-sm leading-tight">
+            <span className="font-semibold">{data.user}</span>{" "}
+            <span className="text-[#555]">{data.text}</span>
+          </div>
+        </div>
+
+        {/* RIGHT ICON / TIME */}
+        <div className="flex flex-col items-center justify-center gap-1">
+          {data.type === "like" && (
+            <div className="w-6 h-6 rounded-full bg-[#FFE5E5] flex items-center justify-center">
+              ❤️
+            </div>
+          )}
+
+          {data.type === "comment" && (
+            <div className="w-6 h-6 rounded-full bg-[#E6F4EA] flex items-center justify-center">
+              💬
+            </div>
+          )}
+
+          {data.type === "story_like" && (
+            <div className="w-6 h-6 rounded-full bg-[#FFF3D6] flex items-center justify-center">
+              ⭐
+            </div>
+          )}
+
+          <span className="text-[11px] text-gray-400">{data.time}</span>
+        </div>
       </div>
-      {data.showFollowBtn ? (
-        <button className="px-3 py-1 text-xs bg-blue-500 text-white rounded-lg">Follow</button>
-      ) : (
-        <span className="text-xs text-gray-400">{data.time}</span>
-      )}
     </div>
   );
+};
+
 
   return (
     <div className="fixed top-0 right-0 w-96 h-full bg-white shadow-xl p-4 z-50 overflow-y-auto border-l border-gray-200">
