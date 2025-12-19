@@ -1,48 +1,48 @@
 import React from "react";
-import { Toaster } from "react-hot-toast";
-
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-
-// Authentication
-
+// AUTH
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Forget from "./components/Forget";
 import Otp from "./components/Otp";
 import NewPassword from "./components/NewPassword";
-// import MessagesPage from "./pages/MessagesPage";
-// import NotificationsPage from "./pages/NotificationsPage";
-
 import WelcomeScreen from "./components/WelcomeScreen";
 
-// Setup Pages
-import ProfileSetup from "./components/Profile";  // Name must match file EXACTLY
+import ProfileSetup from "./components/Profile";
 import LocationSetup from "./components/LocationSetup";
 import ResetSuccess from "./components/ResetSuccess";
 import UserOnboardingSetup from "./components/UserOnboardingSetup";
-import Dob from './components/Dob';
+import Dob from "./components/Dob";
 
-// Main Pages
+// LAYOUT
 import HomePages from "./components/HomePages";
+
+// CENTER PAGES
+import Feed from "./components/Feed";
+import Create from "./pages/Create";
+import Explore from "./pages/Explore";
+import Dashboard from "./pages/Dashboard";
+import Profile from "./pages/Profile";
+import Ecommerce from "./pages/Ecommerce";
+import Deals from "./pages/Deals";
 
 function App() {
   return (
     <Router>
       <Routes>
+
+        {/* AUTH ROUTES */}
         <Route path="/" element={<WelcomeScreen />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-
         <Route path="/profile-setup" element={<ProfileSetup />} />
         <Route path="/location-setup" element={<LocationSetup />} />
         <Route path="/user-onboarding-setup" element={<UserOnboardingSetup />} />
         <Route path="/reset-success" element={<ResetSuccess />} />
-        <Route path="/Dob" element={<Dob />} />
-
+        <Route path="/dob" element={<Dob />} />
 
         <Route
-        
           path="/forgot-password"
           element={
             <Forget
@@ -57,10 +57,18 @@ function App() {
         <Route path="/otp" element={<Otp />} />
         <Route path="/new-password" element={<NewPassword />} />
 
-        {/* Main Feed */}
-        <Route path="/home-pages" element={<HomePages />} />
-        <Route path="/messages" element={<HomePages page="messages" />} />
-        <Route path="/notifications" element={<HomePages page="notifications" />} />
+        {/* MAIN APP (LAYOUT + CENTER SWAP) */}
+        <Route path="/home-pages" element={<HomePages />}>
+          <Route index element={<Feed />} />
+          <Route path="feed" element={<Feed />} />
+          <Route path="ecommerce" element={<Ecommerce />} />
+          <Route path="deals" element={<Deals />} />
+          <Route path="create" element={<Create />} />
+          <Route path="explore" element={<Explore />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="profile" element={<Profile />} />
+        </Route>
+
       </Routes>
     </Router>
   );

@@ -10,9 +10,9 @@ const RightSidebar = ({ setShowNotifications, setShowChat }) => {
       style={{
         width: "353px",
         background: "#FFFFFF",
-        borderStyle: "solid",
-        borderColor: "#73725E",
-        borderWidth: "0px 0.5px 0px 0.5px",
+        // borderStyle: "solid",
+        // borderColor: "#73725E",
+        // borderWidth: "0px 0.5px 0px 0.5px",
       }}
     >
 

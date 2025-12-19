@@ -2,7 +2,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const SuggestionRow = ({ id, name, mutuals, avatar, initFollowing, refreshList }) => {
+const SuggestionRow = ({
+  id,
+  name,
+  mutuals,
+  avatar,
+  initFollowing,
+  refreshList,
+}) => {
   const [isFollowing, setIsFollowing] = useState(initFollowing);
   const [loading, setLoading] = useState(false);
 
@@ -25,7 +32,6 @@ const SuggestionRow = ({ id, name, mutuals, avatar, initFollowing, refreshList }
 
       setIsFollowing((prev) => !prev);
       if (refreshList) refreshList();
-
     } catch (err) {
       console.error("Follow/unfollow failed:", err.response?.data || err);
       alert("Failed to update follow status.");
@@ -35,25 +41,33 @@ const SuggestionRow = ({ id, name, mutuals, avatar, initFollowing, refreshList }
   };
 
   return (
-    <div className="flex items-center justify-between py-2">
+    <div className="flex items-center justify-between gap-6 py-2">
+      {/* LEFT: AVATAR + NAME */}
       <div className="flex items-center space-x-3 min-w-0">
         <img
           src={avatar}
           alt={name}
           className="w-10 h-10 rounded-full object-cover flex-shrink-0"
         />
+
         <div className="min-w-0">
-          <p className="font-semibold text-sm text-gray-800 truncate">{name}</p>
-          <p className="text-xs text-gray-500 truncate">{mutuals}</p>
+          <p className="font-semibold text-sm text-gray-800 truncate">
+            {name}
+          </p>
+          <p className="text-xs text-gray-500 truncate">
+            {mutuals}
+          </p>
         </div>
       </div>
 
+      {/* RIGHT: FOLLOW BUTTON */}
       <button
         onClick={toggleFollow}
         disabled={loading}
-        className={`text-sm font-semibold p-1 px-4 rounded-lg transition-all whitespace-nowrap border
+        className={`text-sm font-semibold px-4 py-1 rounded-lg transition-all whitespace-nowrap border
           ${isFollowing ? "bg-gray-300 text-black" : "bg-[#73725E] text-white"}
-          ${loading ? "opacity-50 cursor-not-allowed" : ""}`}
+          ${loading ? "opacity-50 cursor-not-allowed" : ""}
+        `}
       >
         {loading ? "..." : isFollowing ? "Following" : "Follow"}
       </button>
@@ -107,42 +121,42 @@ const SuggestedUsers = () => {
   const visible = showAll ? suggestions : suggestions.slice(0, 4);
 
   return (
-   <div className="bg-white p-4 rounded-xl shadow-lg border border-gray-100">
-  {/* HEADER */}
- <div className="flex items-center justify-between mb-2">
-  <h3 className="font-semibold text-base text-black">
-    Suggested
-  </h3>
+    <div className="bg-white p-4 rounded-xl">
+      {/* HEADER */}
+      <div className="flex items-center justify-between mb-2">
+        <h3 className="font-semibold text-base text-black">
+          Suggested
+        </h3>
 
-  {suggestions.length > 4 && (
-    <span
-      onClick={() => setShowAll((prev) => !prev)}
-      className="text-sm text-gray-500 cursor-pointer select-none"
-    >
-      {showAll ? "Show Less" : "See All"}
-    </span>
-  )}
-</div>
-
-
-  {/* LIST */}
-  <div>
-    {visible.map((user, index) => (
-      <div
-        key={user.id}
-        className={`${
-          index !== visible.length - 1 ? "border-b border-gray-200" : ""
-        }`}
-      >
-        <SuggestionRow
-          {...user}
-          refreshList={fetchSuggestions}
-        />
+        {suggestions.length > 4 && (
+          <span
+            onClick={() => setShowAll((prev) => !prev)}
+            className="text-sm text-gray-500 cursor-pointer select-none"
+          >
+            {showAll ? "Show Less" : "See All"}
+          </span>
+        )}
       </div>
-    ))}
-  </div>
-</div>
 
+      {/* LIST */}
+      <div>
+        {visible.map((user, index) => (
+          <div
+            key={user.id}
+            className={`${
+              index !== visible.length - 1
+                ? "border-b border-gray-200"
+                : ""
+            }`}
+          >
+            <SuggestionRow
+              {...user}
+              refreshList={fetchSuggestions}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };
 
