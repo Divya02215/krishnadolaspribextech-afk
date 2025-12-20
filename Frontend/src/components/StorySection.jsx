@@ -142,7 +142,7 @@ const StorySection = ({ setShowNotifications, setShowChat }) => {
   };
 
   return (
-    <div className="p-0.3 bg-white  rounded-lg space-y-4">
+    <div className="p-0.3 bg-white  rounded-lg px-0 py-0 space-y-2">
   {/* STORIES ROW */}
   <div className="flex items-center gap-5 px-4 py-3 overflow-x-auto no-scrollbar">
     {stories.map((userStory, idx) => (

@@ -1,38 +1,21 @@
-// src/components/RightSidebar.jsx
 import React from "react";
 import StorySection from "./StorySection";
-import { PlusIcon, XMarkIcon, HeartIcon } from "@heroicons/react/24/outline";
+import { HeartIcon } from "@heroicons/react/24/outline";
 
 const RightSidebar = ({ setShowNotifications, setShowChat }) => {
   return (
-    <div
-      className="fixed top-0 right-0 h-full flex flex-col bg-white z-30"
-      style={{
-        width: "353px",
-        background: "#FFFFFF",
-        // borderStyle: "solid",
-        // borderColor: "#73725E",
-        // borderWidth: "0px 0.5px 0px 0.5px",
-      }}
-    >
-
-      {/* Header (optional like Sidebar) */}
-      <div
-        className="flex items-center h-16 p-4 justify-between"
-        style={{
-          // borderBottom: "0.5px solid #73725E",
-        }}
-      >
-        <h2 className="text-lg font-semibold text-gray-700">
-          glimpse
+    <div className="h-full flex flex-col">
+      {/* ================= HEADER ================= */}
+      <div className="pt-10 pb-8 flex items-center justify-between">
+        <h2 className="text-xl font-semibold text-[#1F1F1F]">
+          Glimpse
         </h2>
 
-        {/* ICONS */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-4">
           {/* CHAT ICON */}
           <button
             onClick={() => setShowChat(true)}
-            className="relative flex items-center justify-center p-2 rounded-full bg-gray-100 hover:bg-gray-200 hover:scale-110 transition-all"
+            className="relative flex items-center justify-center p-3 rounded-full bg-gray-100 hover:bg-gray-200 hover:scale-110 transition-all"
           >
             <div className="relative w-6 h-6 flex items-center justify-center">
               <svg
@@ -46,18 +29,18 @@ const RightSidebar = ({ setShowNotifications, setShowChat }) => {
                 <path
                   fillRule="evenodd"
                   clipRule="evenodd"
-                  d="M4.07687 16.0806C4.09614 15.8793 4.07076 15.6762 4.00254 15.4859C3.93433 15.2955 3.82497 15.1225 3.68225 14.9793C2.22475 13.5163 1.375 11.6435 1.375 9.625C1.375 5.236 5.5055 1.375 11 1.375C16.4945 1.375 20.625 5.236 20.625 9.625C20.625 14.014 16.4945 17.875 11 17.875C10.0307 17.8774 9.06534 17.7516 8.129 17.501C7.80172 17.4133 7.45358 17.4495 7.15138 17.6028C6.61925 17.8723 5.44637 18.3865 3.52962 18.8306C3.7968 17.9329 3.98 17.0123 4.07687 16.0806ZM2.97687 20.3541L3.00437 20.3486C5.52063 19.8495 7.05787 19.1909 7.77287 18.8293C8.82537 19.111 9.91046 19.2524 11 19.25C17.0748 19.25 22 14.9408 22 9.625C22 4.30925 17.0748 0 11 0C4.92525 0 0 4.30925 0 9.625C0 12.045 1.02163 14.2588 2.70875 15.95C2.59116 17.0365 2.34941 18.1059 1.98825 19.1373L1.98412 19.1524C1.88137 19.4477 1.76949 19.7398 1.64863 20.0283C1.54 20.284 1.75038 20.57 2.024 20.526C2.34252 20.4738 2.66019 20.4165 2.97687 20.3541ZM11 6.86538C13.288 4.51275 19.0094 8.6295 11 13.9219C2.99063 8.62813 8.712 4.51275 11 6.86538Z"
+                  d="M4.07687 16.0806C4.09614 15.8793 4.07076 15.6762 4.00254 15.4859C3.93433 15.2955 3.82497 15.1225 3.68225 14.9793C2.22475 13.5163 1.375 11.6435 1.375 9.625C1.375 5.236 5.5055 1.375 11 1.375C16.4945 1.375 20.625 5.236 20.625 9.625C20.625 14.014 16.4945 17.875 11 17.875C10.0307 17.8774 9.06534 17.7516 8.129 17.501C7.80172 17.4133 7.45358 17.4495 7.15138 17.6028C6.61925 17.8723 5.44637 18.3865 3.52962 18.8306C3.7968 17.9329 3.98 17.0123 4.07687 16.0806Z"
                   fill="#73725E"
                 />
               </svg>
-              <HeartIcon className="absolute w-3 h-3 text-black top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+              <HeartIcon className="absolute w-3 h-3 text-black top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
             </div>
           </button>
 
-          {/* AUDIO ICON */}
+          {/* AUDIO / NOTIFICATION ICON */}
           <button
             onClick={() => setShowNotifications(true)}
-            className="relative flex items-center justify-center p-2 rounded-full bg-white shadow-sm border border-gray-200 hover:bg-gray-100 hover:scale-110 transition-all"
+            className="relative flex items-center justify-center p-3 rounded-full bg-white border border-gray-200 shadow-sm hover:bg-gray-100 hover:scale-110 transition-all"
           >
             <svg
               width="19"
@@ -76,16 +59,13 @@ const RightSidebar = ({ setShowNotifications, setShowChat }) => {
         </div>
       </div>
 
-      {/* STORIES ROW */}
-
-      {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-6">
+      {/* ================= CONTENT ================= */}
+      <div className="flex-1 overflow-y-auto space-y-14 pb-14">
         <StorySection
           setShowNotifications={setShowNotifications}
           setShowChat={setShowChat}
         />
       </div>
-
     </div>
   );
 };

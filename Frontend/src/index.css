@@ -22,8 +22,10 @@ body {
   margin: 0;
   padding: 0;
 
-  /* 🔥 CRITICAL: prevents horizontal & vertical scroll */
-  overflow: hidden;
+  /* allow internal scrolling */
+  overflow-x: hidden;
+  overflow-y: hidden;
+
 
   font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",

@@ -43,7 +43,7 @@ const SuggestionRow = ({
   return (
     <div className="flex items-center justify-between gap-6 py-2">
       {/* LEFT: AVATAR + NAME */}
-      <div className="flex items-center space-x-3 min-w-0">
+      <div className="flex items-center space-x-1 min-w-0">
         <img
           src={avatar}
           alt={name}
@@ -121,7 +121,7 @@ const SuggestedUsers = () => {
   const visible = showAll ? suggestions : suggestions.slice(0, 4);
 
   return (
-    <div className="bg-white p-4 rounded-xl">
+    <div className="bg-white rounded-xl">
       {/* HEADER */}
       <div className="flex items-center justify-between mb-2">
         <h3 className="font-semibold text-base text-black">

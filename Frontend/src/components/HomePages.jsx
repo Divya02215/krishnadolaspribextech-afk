@@ -1,4 +1,3 @@
-// src/components/HomePages.jsx
 import React, { useState, Suspense } from "react";
 import { Outlet } from "react-router-dom";
 
@@ -10,39 +9,26 @@ import RightSidebar from "./RightSidebar";
 import NotificationPage from "./NotificationPage";
 import ChatBox from "./ChatBox";
 
-const HEADER_HEIGHT = 80;
-
-/**
- * FIXED HEADER
- */
+/* ================= CENTER HEADER ================= */
 const FixedHeader = ({ onNotifications, onChat }) => {
   return (
     <header
-      className="sticky top-0 z-30 bg-[#F7F7F2]"
-      style={{ height: HEADER_HEIGHT }}
+      className="flex items-center justify-center border-b border-[#E5E5DD] flex-shrink-0"
+      style={{ height: 80, width: 534, background: "#fff" }}
     >
-      <div className="w-full h-full flex">
-        <div className="bg-white h-[56px] w-full flex items-center px-4 relative">
-          
-          {/* CENTERED SEARCH BAR */}
-          <div className="absolute left-1/2 -translate-x-1/2">
-            <SearchBar />
-          </div>
+      <div className="flex-1 flex justify-center">
+        <SearchBar />
+      </div>
 
-          {/* RIGHT NAV */}
-          <div className="ml-auto flex items-center">
-            <TopRightNav
-              setShowNotifications={onNotifications}
-              setShowChat={onChat}
-            />
-          </div>
-
-        </div>
+      <div className="pr-6">
+        <TopRightNav
+          setShowNotifications={onNotifications}
+          setShowChat={onChat}
+        />
       </div>
     </header>
   );
 };
-
 
 const HomePages = () => {
   const [showNotifications, setShowNotifications] = useState(false);
@@ -55,34 +41,30 @@ const HomePages = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F7F2]">
-      {/* ⬅️ ONLY CHANGE IS HERE */}
-      <div className="grid grid-cols-[280px_1fr_360px]">
+    <div className="h-screen bg-[#F7F7F2] overflow-hidden">
+      {/* ================= MAIN EDGE-TO-EDGE LAYOUT ================= */}
+      <div className="flex w-full h-full">
 
-        {/* LEFT SIDEBAR */}
-        <aside
-          className="bg-white sticky top-0 h-screen flex flex-col"
-          style={{
-            borderStyle: "solid",
-            borderColor: "#73725E",
-            borderWidth: "0px 0.5px 0px 0.5px",
-          }}
-        >
-          <div style={{ height: HEADER_HEIGHT }} />
-          <div className="flex-1 overflow-y-auto px-6 pt-6">
-            <Sidebar />
+        {/* ================= LEFT SIDEBAR ================= */}
+        <aside className="flex-1 bg-white border-r border-[#73725E]">
+          <div className="h-full flex justify-center">
+            <div className="w-[280px]">
+              <Sidebar />
+            </div>
           </div>
         </aside>
 
-        {/* CENTER CONTENT */}
-        <section className="flex flex-col h-screen w-full">
+        {/* ================= CENTER COLUMN (SCROLLS) ================= */}
+        <section className="flex flex-col items-center h-full overflow-y-auto">
+          {/* HEADER (SCROLLS NOW) */}
           <FixedHeader
             onNotifications={() => openPanel(setShowNotifications)}
             onChat={() => openPanel(setShowChat)}
           />
 
-          <main className="flex-1 overflow-y-auto">
-            <div className="w-full px-8 pb-10">
+          {/* CONTENT */}
+          <main className="w-[534px]">
+            <div className="px-8 py-6 box-border min-h-full">
               <Suspense fallback={<p>Loading...</p>}>
                 <Outlet />
               </Suspense>
@@ -90,35 +72,27 @@ const HomePages = () => {
           </main>
         </section>
 
-        {/* RIGHT SIDEBAR */}
-        <aside
-          className="bg-white sticky top-0 h-screen flex flex-col"
-          style={{
-            borderStyle: "solid",
-            borderColor: "#73725E",
-            borderWidth: "0px 0.5px 0px 0.5px",
-          }}
-        >
-          <div style={{ height: HEADER_HEIGHT }} />
-          <div className="flex-1 overflow-y-auto px-6 pt-6">
-            <RightSidebar
-              setShowNotifications={() => openPanel(setShowNotifications)}
-              setShowChat={() => openPanel(setShowChat)}
-            />
+        {/* ================= RIGHT SIDEBAR ================= */}
+        <aside className="flex-1 bg-white border-l border-[#73725E]">
+          <div className="h-full flex justify-center">
+            <div className="w-[280px]">
+              <RightSidebar
+                setShowNotifications={() => openPanel(setShowNotifications)}
+                setShowChat={() => openPanel(setShowChat)}
+              />
+            </div>
           </div>
         </aside>
       </div>
 
-      {/* OVERLAYS */}
+      {/* ================= OVERLAYS ================= */}
       {showNotifications && (
         <NotificationPage
           setShowNotifications={() => setShowNotifications(false)}
         />
       )}
 
-      {showChat && (
-        <ChatBox setShowChat={() => setShowChat(false)} />
-      )}
+      {showChat && <ChatBox setShowChat={() => setShowChat(false)} />}
     </div>
   );
 };

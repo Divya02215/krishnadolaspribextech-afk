@@ -2,8 +2,20 @@ import React, { useRef, useState } from "react";
 
 function Create() {
   const fileInputRef = useRef(null);
-  const [activeType, setActiveType] = useState(null); // null initially
+
+  const [activeType, setActiveType] = useState(null);
   const [showUploadArea, setShowUploadArea] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [isMuted, setIsMuted] = useState(false);
+
+  /* TEXT STATES */
+  const [activeTool, setActiveTool] = useState(null);
+  const [text, setText] = useState("Type something");
+  const [fontFamily, setFontFamily] = useState("Modern");
+  const [textColor, setTextColor] = useState("#ffffff");
+  const [textAlign, setTextAlign] = useState("center");
+  const [textBg, setTextBg] = useState("transparent");
+  const [opacity, setOpacity] = useState(1);
 
   const acceptTypes = {
     post: "image/*,video/*",
@@ -11,155 +23,324 @@ function Create() {
     reels: "video/*",
   };
 
-  const handleButtonClick = () => {
+  const fontsMap = {
+    Modern: "sans-serif",
+    Poly: "cursive",
+    "Noto Serif": "serif",
+    "Open Sans": "'Open Sans', sans-serif",
+    Literata: "Georgia, serif",
+  };
+
+  /* STEP 1: CLICK TOP BUTTON */
+  const handleTopButtonClick = (type) => {
+    setActiveType(type);
+    setShowUploadArea(true);
+  };
+
+  /* STEP 2: OPEN FILE PICKER */
+  const handleSelectFromComputer = () => {
     fileInputRef.current?.click();
   };
 
+  /* STEP 3: FILE SELECTED */
   const handleFileChange = (e) => {
-    const files = Array.from(e.target.files);
-    console.log("Selected files:", files, "Type:", activeType);
-    // 👉 Next step: upload API / preview
-  };
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-  const handleTopButtonClick = (type) => {
-    setActiveType(type);
-    setShowUploadArea(true); // show the upload area
+    setPreviewUrl(URL.createObjectURL(file));
+    setShowUploadArea(false);
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-[#f6f6f4]">
-      <div className="flex flex-col items-center gap-10">
-        {/* TOP BUTTONS */}
-        {!showUploadArea && (
-          <div className="flex flex-col items-center gap-5">
-            <ButtonWithBg
-              label="Uploads"
-              onClick={() => handleTopButtonClick("post")}
+      {/* ================= EMPTY STATE ================= */}
+      {!previewUrl && !showUploadArea && (
+        <div className="flex flex-col gap-5">
+          <ButtonWithBg
+            label="Uploads"
+            onClick={() => handleTopButtonClick("post")}
+          />
+          <ButtonWithBg
+            label="Glimpse"
+            variant="glimpse"
+            onClick={() => handleTopButtonClick("story")}
+          />
+          <ButtonWithBg
+            label="Loops"
+            onClick={() => handleTopButtonClick("reels")}
+          />
+        </div>
+      )}
+
+      {/* ================= UPLOAD AREA ================= */}
+      {showUploadArea && (
+        <div className="flex flex-col items-center gap-6">
+          <svg width="122" height="122" viewBox="0 0 122 122" fill="none">
+            <circle cx="61" cy="61" r="58" stroke="#73725E" strokeWidth="5" />
+          </svg>
+
+          <p className="text-[#73725E] text-base">
+            Drag your photos and videos here
+          </p>
+
+          <button
+            onClick={handleSelectFromComputer}
+            className="w-[277px] h-[50px] rounded-full bg-[#73725E] text-white font-medium"
+          >
+            Select from computer
+          </button>
+        </div>
+      )}
+
+      {/* ================= PREVIEW ================= */}
+      {previewUrl && (
+        <div className="relative w-[420px] h-[740px] rounded-[28px] overflow-hidden bg-black">
+          {previewUrl.includes("video") ? (
+            <video
+              src={previewUrl}
+              autoPlay
+              loop
+              muted={isMuted}
+              className="w-full h-full object-cover"
             />
-            <ButtonWithBg
-              label="Glimpse"
-              onClick={() => handleTopButtonClick("story")}
+          ) : (
+            <img
+              src={previewUrl}
+              alt="preview"
+              className="w-full h-full object-cover"
             />
-            <ButtonWithBg
-              label="Loops"
-              onClick={() => handleTopButtonClick("reels")}
+          )}
+
+          {/* ================= TEXT OVERLAY ================= */}
+          {activeTool === "font" && (
+            <textarea
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              className="absolute top-1/2 left-1/2 w-[90%] -translate-x-1/2 -translate-y-1/2 bg-transparent outline-none resize-none text-xl"
+              style={{
+                color: textColor,
+                textAlign,
+                fontFamily: fontsMap[fontFamily],
+                backgroundColor:
+                  textBg === "white"
+                    ? "#fff"
+                    : textBg === "black"
+                    ? "#000"
+                    : "transparent",
+                opacity,
+              }}
             />
+          )}
+
+          {/* ================= FONT SELECTOR (SCROLL FIXED) ================= */}
+          {activeTool === "font" && (
+            <div className="absolute bottom-24 left-1/2 -translate-x-1/2 w-[320px]">
+              <div className="flex gap-3 px-4 py-3 overflow-x-auto rounded-full hide-scrollbar">
+                <div className="flex gap-3 w-max">
+                  {Object.keys(fontsMap).map((font) => (
+                    <button
+                      key={font}
+                      onClick={() => setFontFamily(font)}
+                      className={`px-4 py-2 rounded-full text-sm shrink-0 border transition ${
+                        fontFamily === font
+                          ? "bg-white text-black border-white"
+                          : "text-white border-white/60"
+                      }`}
+                      style={{ fontFamily: fontsMap[font] }}
+                    >
+                      {font}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ================= RIGHT SIDEBAR ================= */}
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex flex-col gap-4">
+            <SidebarButton onClick={() => setActiveTool("font")}>
+              <FontIcon />
+            </SidebarButton>
+
+            {activeTool === "font" ? (
+              <>
+                <SidebarButton
+                  onClick={() =>
+                    setTextColor(textColor === "#fff" ? "#ffcc00" : "#fff")
+                  }
+                >
+                  🎨
+                </SidebarButton>
+
+                <SidebarButton
+                  onClick={() =>
+                    setTextAlign(
+                      textAlign === "left"
+                        ? "center"
+                        : textAlign === "center"
+                        ? "right"
+                        : "left"
+                    )
+                  }
+                >
+                  ↔️
+                </SidebarButton>
+
+                <SidebarButton
+                  onClick={() =>
+                    setTextBg(
+                      textBg === "transparent"
+                        ? "black"
+                        : textBg === "black"
+                        ? "white"
+                        : "transparent"
+                    )
+                  }
+                >
+                  ⬛
+                </SidebarButton>
+
+                <SidebarButton>
+                  <input
+                    type="range"
+                    min="0.2"
+                    max="1"
+                    step="0.1"
+                    value={opacity}
+                    onChange={(e) => setOpacity(e.target.value)}
+                  />
+                </SidebarButton>
+              </>
+            ) : (
+              <>
+                <SidebarButton>
+                  <MuteIcon />
+                </SidebarButton>
+
+                <SidebarButton onClick={() => setIsMuted(!isMuted)}>
+                  <AudioIcon />
+                </SidebarButton>
+
+                <SidebarButton>
+                  <CropIcon />
+                </SidebarButton>
+              </>
+            )}
           </div>
-        )}
+        </div>
+      )}
 
-        {/* UPLOAD AREA */}
-        {showUploadArea && (
-          <div className="flex flex-col items-center gap-6 mt-6">
-            {/* SVG ICON */}
-            <svg
-              width="122"
-              height="122"
-              viewBox="0 0 122 122"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M90.1631 17.7917C88.7601 12.6473 84.3427 8.93142 78.7942 8.53238C72.2977 8.06471 62.6902 7.625 49.5625 7.625C36.5136 7.625 26.9467 8.05963 20.4528 8.52475C13.9537 8.98733 8.98479 13.9538 8.52221 20.4553C8.05708 26.9493 7.625 36.5187 7.625 49.5625C7.625 62.6902 8.06725 72.2952 8.53238 78.7917C8.93142 84.3401 12.6499 88.7601 17.7917 90.1605"
-                stroke="#73725E"
-                strokeWidth="5.62"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M31.3998 43.3278C31.8623 36.8288 36.8288 31.8649 43.3303 31.3998C49.8218 30.9321 59.3911 30.5 72.4375 30.5C85.4839 30.5 95.0507 30.9346 101.545 31.3998C108.046 31.8623 113.013 36.8288 113.475 43.3303C113.94 49.8243 114.375 59.3937 114.375 72.4375C114.375 85.4839 113.94 95.0507 113.475 101.547C113.013 108.046 108.046 113.01 101.545 113.475C95.0507 113.94 85.4813 114.375 72.4375 114.375C59.3911 114.375 49.8243 113.94 43.3278 113.475C36.8288 113.013 31.8649 108.046 31.3998 101.545C30.9321 95.0533 30.5 85.4839 30.5 72.4375C30.5 59.3911 30.9346 49.8243 31.3998 43.3278Z"
-                stroke="#73725E"
-                strokeWidth="5.62"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M113.984 92.4881C108.252 87.115 104.122 83.5363 101.255 81.1929C97.8542 78.4098 93.3707 78.0056 89.7082 80.4482C86.8869 82.329 83.0134 85.2011 77.953 89.5448C70.4297 82.3493 65.2447 77.8277 61.8439 75.0446C58.4432 72.2615 53.9597 71.8599 50.2971 74.2999C46.1796 77.0449 39.8178 81.9046 30.8076 90.3581M81.3334 55.916C81.3334 57.9383 82.1368 59.8777 83.5667 61.3077C84.9967 62.7377 86.9361 63.541 88.9584 63.541C90.9807 63.541 92.9201 62.7377 94.3501 61.3077C95.7801 59.8777 96.5834 57.9383 96.5834 55.916C96.5834 53.8937 95.7801 51.9543 94.3501 50.5243C92.9201 49.0944 90.9807 48.291 88.9584 48.291C86.9361 48.291 84.9967 49.0944 83.5667 50.5243C82.1368 51.9543 81.3334 53.8937 81.3334 55.916Z"
-                stroke="#73725E"
-                strokeWidth="5.62"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-
-            <p className="text-[#73725E] text-base">
-              Drag Your Photos And Videos Here
-            </p>
-
-            {/* SELECT BUTTON */}
-            <button
-              onClick={handleButtonClick}
-              className="
-                w-[277px]
-                h-[50px]
-                rounded-full
-                bg-[#73725E]
-                text-white
-                font-medium
-                flex
-                items-center
-                justify-center
-                gap-2
-              "
-            >
-              Select From Computer
-            </button>
-
-            {/* HIDDEN FILE INPUT */}
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept={acceptTypes[activeType]}
-              multiple
-              onChange={handleFileChange}
-              className="hidden"
-            />
-          </div>
-        )}
-      </div>
+      {/* ================= FILE INPUT ================= */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept={acceptTypes[activeType]}
+        onChange={handleFileChange}
+        className="hidden"
+      />
     </div>
   );
 }
 
-/* BUTTON COMPONENT */
-const ButtonWithBg = ({ label, onClick }) => {
-  return (
-    <button
-      onClick={onClick}
-      className={`relative w-[267px] h-[69px] flex items-center justify-center transition hover:scale-[1.01]`}
-    >
+/* ================= SIDEBAR BUTTON ================= */
+const SidebarButton = ({ children, onClick }) => (
+  <button
+    onClick={onClick}
+    className="w-10 h-10 rounded-full bg-black/60 flex items-center justify-center"
+  >
+    {children}
+  </button>
+);
+
+/* ========= ICON SVGs (UNCHANGED) ========= */
+
+const FontIcon = () => (
+  <svg width="20" height="27" viewBox="0 0 20 27" fill="none">
+    <path
+      d="M16.7346 23.6866L14.9571 18.2897M14.9571 18.2897H8.55964M14.9571 18.2897L12.2338 10.0195C12.1951 9.89314 12.1292 9.78506 12.0445 9.709C11.9598 9.63293 11.86 9.59231 11.758 9.59231C11.6559 9.59231 11.5562 9.63293 11.4714 9.709C11.3867 9.78506 11.3208 9.89314 11.2821 10.0195L8.55964 18.2897M8.55964 18.2897L6.78214 23.6866"
+      stroke="white"
+      strokeWidth="1.07"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const MuteIcon = () => (
+  <svg width="27" height="27" viewBox="0 0 27 27" fill="none">
+    <path
+      d="M21.1534 6.24082C22.0784 7.16585 22.8122 8.26403 23.3128 9.47265C23.8135 10.6813 24.0711 11.9767 24.0711 13.2849"
+      stroke="white"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const AudioIcon = () => (
+  <svg width="27" height="27" viewBox="0 0 27 27" fill="none">
+    <path
+      d="M10.0597 13.2391L22.1355 8.29039V5.18343"
+      fill="white"
+    />
+  </svg>
+);
+
+const CropIcon = () => (
+  <svg width="27" height="27" viewBox="0 0 27 27" fill="none">
+    <path
+      d="M5.53316 24.3459L5.53316 14.3842"
+      stroke="white"
+      strokeWidth="2.66"
+      strokeLinecap="round"
+    />
+  </svg>
+);
+
+/* ================= TOP BUTTON ================= */
+const ButtonWithBg = ({ label, onClick, variant }) => (
+  <button
+    onClick={onClick}
+    className="relative w-[314px] h-[69px] flex items-center justify-center"
+  >
+    {variant === "glimpse" ? (
+      <svg
+        width="314"
+        height="69"
+        viewBox="0 0 314 69"
+        fill="none"
+        className="absolute inset-0"
+      >
+        <path
+          d="M30.4335 7.13382C31.9128 5.76216 33.8556 5 35.873 5H278.511"
+          fill="#FFFFFF"
+        />
+      </svg>
+    ) : (
       <svg
         width="267"
         height="69"
         viewBox="0 0 267 69"
         fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="absolute inset-0 opacity-80"
+        className="absolute left-1/2 -translate-x-1/2 opacity-80"
       >
-        <g filter="url(#filter0_d)">
-          <rect
-            x="9"
-            y="5"
-            width="249"
-            height="51"
-            rx="8"
-            fill="white"
-            fillOpacity="0.2"
-          />
-        </g>
+        <rect
+          x="9"
+          y="5"
+          width="249"
+          height="51"
+          rx="8"
+          fill="#FFFFFF"
+          fillOpacity="0.2"
+        />
       </svg>
+    )}
 
-      <span
-        className="
-          relative z-10
-          font-poppins font-medium
-          text-[20px] leading-[100%]
-          text-[#111111]
-        "
-      >
-        {label}
-      </span>
-    </button>
-  );
-};
+    <span className="relative z-10 text-[20px] font-medium text-[#111]">
+      {label}
+    </span>
+  </button>
+);
 
 export default Create;

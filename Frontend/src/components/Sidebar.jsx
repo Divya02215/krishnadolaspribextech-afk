@@ -24,23 +24,16 @@ const menu = [
 
 const Sidebar = () => {
   return (
-    <div
-      className="h-full flex flex-col text-left"
-      style={{
-        width: "353px",
-        background: "white",
-        borderRight: "0.5px solid #73725E",
-      }}
-    >
+    <div className="h-full flex flex-col">
       {/* LOGO */}
-      <div className="px-8 pt-8 pb-10">
+      <div className="pt-8 pb-10 pl-10">
         <span className="font-poppins font-semibold text-[32px] text-[#5E5B29]">
           Univa
         </span>
       </div>
 
       {/* MENU */}
-      <nav className="flex-1 px-6">
+      <nav className="flex-1 pl-8 pr-6">
         <ul className="space-y-3">
           {menu.map(({ label, icon: Icon, path }) => (
             <li key={label}>
@@ -49,30 +42,20 @@ const Sidebar = () => {
                 className={({ isActive }) =>
                   `
                   flex items-center gap-4
-                  h-[48px] px-5
+                  h-12 px-5
                   rounded-xl
-                  w-full
                   text-[15px]
                   transition
                   ${
                     isActive
-                      ? "bg-white shadow-sm text-[#1F1F1F] font-medium"
-                      : "text-[#7A7A7A] hover:bg-[#F2F2EC]"
+                      ? "bg-[#F2F2EC] text-black font-medium"
+                      : "text-gray-500 hover:bg-[#F2F2EC]"
                   }
                 `
                 }
               >
-                {({ isActive }) => (
-                  <>
-                    <Icon
-                      size={20}
-                      className={
-                        isActive ? "text-[#1F1F1F]" : "text-[#9A9A9A]"
-                      }
-                    />
-                    <span>{label}</span>
-                  </>
-                )}
+                <Icon size={18} />
+                {label}
               </NavLink>
             </li>
           ))}
@@ -80,20 +63,21 @@ const Sidebar = () => {
       </nav>
 
       {/* MORE */}
-      <div className="px-6 pb-6 mt-auto">
+      <div className="pl-8 pr-6 pb-8">
         <button
           className="
             flex items-center gap-4
-            h-[48px] px-5
-            rounded-xl
+            h-12 px-5
             w-full
+            rounded-xl
             text-[15px]
-            text-[#7A7A7A]
+            text-gray-500
             hover:bg-[#F2F2EC]
+            transition
           "
         >
-          <MoreHorizontal size={20} className="text-[#9A9A9A]" />
-          <span>More</span>
+          <MoreHorizontal size={18} />
+          More
         </button>
       </div>
     </div>
