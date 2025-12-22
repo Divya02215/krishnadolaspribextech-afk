@@ -22,18 +22,15 @@ body {
   margin: 0;
   padding: 0;
 
-  /* allow internal scrolling */
+  /* ✅ allow internal scrolling */
   overflow-x: hidden;
-  overflow-y: hidden;
-
+  overflow-y: auto;
 
   font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
     "Droid Sans", "Helvetica Neue", sans-serif;
-
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
+
 
 /* ============================
    Code Font
@@ -85,4 +82,19 @@ code {
 
 .hide-scrollbar::-webkit-scrollbar {
   display: none;            /* Chrome */
+}
+
+/* Hide scrollbar but keep scrolling */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.font-scroll::-webkit-scrollbar {
+  display: none;
+}
+.font-scroll {
+  scrollbar-width: none;
 }

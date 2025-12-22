@@ -54,23 +54,30 @@ const HomePages = () => {
           </div>
         </aside>
 
-        {/* ================= CENTER COLUMN (SCROLLS) ================= */}
-        <section className="flex flex-col items-center h-full overflow-y-auto">
-          {/* HEADER (SCROLLS NOW) */}
-          <FixedHeader
-            onNotifications={() => openPanel(setShowNotifications)}
-            onChat={() => openPanel(setShowChat)}
-          />
+      {/* ================= CENTER COLUMN (SCROLLS) ================= */}
+<section className="flex flex-col items-center h-full overflow-y-auto">
+  {/* HEADER */}
+  <FixedHeader
+    onNotifications={() => openPanel(setShowNotifications)}
+    onChat={() => openPanel(setShowChat)}
+  />
 
-          {/* CONTENT */}
-          <main className="w-[534px]">
-            <div className="px-8 py-6 box-border min-h-full">
-              <Suspense fallback={<p>Loading...</p>}>
-                <Outlet />
-              </Suspense>
-            </div>
-          </main>
-        </section>
+  {/* CONTENT */}
+  <main className="w-[534px]">
+    <div
+      className="box-border bg-white overflow-hidden"
+      style={{
+        borderRadius: 28,
+        boxShadow: "0 10px 30px rgba(0,0,0,0.12)",
+      }}
+    >
+      <Suspense fallback={<p>Loading...</p>}>
+        <Outlet />
+      </Suspense>
+    </div>
+  </main>
+</section>
+
 
         {/* ================= RIGHT SIDEBAR ================= */}
         <aside className="flex-1 bg-white border-l border-[#73725E]">
