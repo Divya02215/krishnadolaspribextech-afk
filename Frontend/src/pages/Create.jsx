@@ -1,4 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
+import AnnaCalviMiquelon from "../Assets/Music/AnnaCalviMiquelon.mp3";
+import AntonioVivaldiSummer from "../Assets/Music/AntonioVivaldiSummer.mp3";
+import BillieEilish from "../Assets/Music/BillieEilish.mp3";
+import BillWithersAintNoSunshine from "../Assets/Music/BillWithersAintNoSunshine.mp3";
+import BitterBelief from "../Assets/Music/BitterBelief.mp3";
+import BobDylanBallad from "../Assets/Music/BobDylanBallad.mp3";
+import DaxCatchTheRain from "../Assets/Music/DaxCatchTheRain.mp3";
+
+
 
 
 const getRandomAvatar = (id) =>
@@ -90,6 +99,44 @@ const SvgButton = ({ onClick }) => {
   );
 };
 
+const SaveIcon = ({ filled = false }) => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M6 6.2C6 5.08 6 4.52 6.218 4.092C6.40974 3.71569 6.71569 3.40974 7.092 3.218C7.52 3 8.08 3 9.2 3H14.8C15.92 3 16.48 3 16.908 3.218C17.2843 3.40974 17.5903 3.71569 17.782 4.092C18 4.52 18 5.08 18 6.2V19.505C18 19.991 18 20.234 17.899 20.367C17.8554 20.4248 17.7997 20.4725 17.7358 20.5067C17.6719 20.5409 17.6013 20.5608 17.529 20.565C17.362 20.575 17.16 20.44 16.756 20.171L12 17L7.244 20.17C6.84 20.44 6.638 20.575 6.47 20.565C6.39784 20.5606 6.32748 20.5407 6.26377 20.5065C6.20007 20.4723 6.14453 20.4247 6.101 20.367C6 20.234 6 19.991 6 19.505V6.2Z"
+      fill={filled ? "#73725E" : "#FAF9F9"}
+      stroke="#73725E"
+      strokeWidth="1.77749"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+const PlayPauseIcon = () => (
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <path d="M10.5004 7.49951H9.00037V16.4995H10.5004V7.49951ZM15.0004 7.49951H13.5004V16.4995H15.0004V7.49951Z" fill="white" />
+    <path d="M12.0004 2.99951C13.7804 2.99951 15.5205 3.52735 17.0005 4.51629C18.4805 5.50522 19.6341 6.91083 20.3153 8.55536C20.9965 10.1999 21.1747 12.0095 20.8274 13.7553C20.4802 15.5012 19.623 17.1048 18.3643 18.3635C17.1057 19.6221 15.502 20.4793 13.7562 20.8266C12.0104 21.1738 10.2008 20.9956 8.55622 20.3144C6.91169 19.6332 5.50608 18.4797 4.51714 16.9996C3.52821 15.5196 3.00037 13.7795 3.00037 11.9995Z" fill="white" />
+  </svg>
+);
+
+
+const PlayingArrowIcon = () => (
+  <svg width="29" height="29" viewBox="0 0 29 29" fill="none">
+    <path
+      d="M22.5146 14.2193L15.4047 21.3293M22.5146 14.2193L15.4047 7.10938M22.5146 14.2193L5.92472 14.2193"
+      stroke="#73725E"
+      strokeWidth="2.36999"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
 
 function Create() {
   const fileInputRef = useRef(null);
@@ -120,19 +167,113 @@ function Create() {
   // "friends" | "hide" | "only"
   // demo users (replace with API later)
   const [friends] = useState([
-  { id: 1, name: "Maddie", avatar: getRandomAvatar(1) },
-  { id: 2, name: "Alex", avatar: getRandomAvatar(2) },
-  { id: 3, name: "Sophia", avatar: getRandomAvatar(3) },
-  { id: 4, name: "Chris", avatar: getRandomAvatar(4) },
-  { id: 5, name: "Emma", avatar: getRandomAvatar(5) },
-  { id: 6, name: "Daniel", avatar: getRandomAvatar(6) },
-  { id: 7, name: "Olivia", avatar: getRandomAvatar(7) },
-]);
+    { id: 1, name: "Maddie", avatar: getRandomAvatar(1) },
+    { id: 2, name: "Alex", avatar: getRandomAvatar(2) },
+    { id: 3, name: "Sophia", avatar: getRandomAvatar(3) },
+    { id: 4, name: "Chris", avatar: getRandomAvatar(4) },
+    { id: 5, name: "Emma", avatar: getRandomAvatar(5) },
+    { id: 6, name: "Daniel", avatar: getRandomAvatar(6) },
+    { id: 7, name: "Olivia", avatar: getRandomAvatar(7) },
+  ]);
 
 
   const [hiddenFrom, setHiddenFrom] = useState([]);
-const [showHideModal, setShowHideModal] = useState(false);
+  const [showHideModal, setShowHideModal] = useState(false);
+  const [showOnlyModal, setShowOnlyModal] = useState(false);
+  const [onlyShareWith, setOnlyShareWith] = useState([]);
+  const [showAudioModal, setShowAudioModal] = useState(false);
+  const [savedMusic, setSavedMusic] = useState([]);
+  const [activeTab, setActiveTab] = useState("forYou");
+  const [playingSongId, setPlayingSongId] = useState(null);
+  const audioRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [selectedMusic, setSelectedMusic] = useState(null);
+  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
 
+  const musicList = [
+    {
+      id: 1,
+      title: "Miquelon",
+      artist: "Anna Calvi",
+      cover: "https://picsum.photos/60?1",
+      audio: AnnaCalviMiquelon,
+    },
+    {
+      id: 2,
+      title: "Summer",
+      artist: "Antonio Vivaldi",
+      cover: "https://picsum.photos/60?2",
+      audio: AntonioVivaldiSummer,
+    },
+    {
+      id: 3,
+      title: "Billie Eilish",
+      artist: "Billie Eilish",
+      cover: "https://picsum.photos/60?3",
+      audio: BillieEilish,
+    },
+    {
+      id: 4,
+      title: "Ain't No Sunshine",
+      artist: "Bill Withers",
+      cover: "https://picsum.photos/60?4",
+      audio: BillWithersAintNoSunshine,
+    },
+    {
+      id: 5,
+      title: "Bitter Belief",
+      artist: "Bitter Belief",
+      cover: "https://picsum.photos/60?5",
+      audio: BitterBelief,
+    },
+    {
+      id: 6,
+      title: "Ballad",
+      artist: "Bob Dylan",
+      cover: "https://picsum.photos/60?6",
+      audio: BobDylanBallad,
+    },
+    {
+      id: 7,
+      title: "Catch The Rain",
+      artist: "Dax",
+      cover: "https://picsum.photos/60?7",
+      audio: DaxCatchTheRain,
+    },
+  ];
+
+
+  const togglePlay = (song) => {
+    // If same song clicked → toggle pause/play
+    if (playingSongId === song.id) {
+      if (isPlaying) {
+        audioRef.current.pause();
+        setIsPlaying(false);
+      } else {
+        audioRef.current.play();
+        setIsPlaying(true);
+      }
+      return;
+    }
+
+    // New song clicked → stop previous + play new
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+
+    const audio = new Audio(song.audio);
+    audioRef.current = audio;
+
+    audio.play();
+    setPlayingSongId(song.id);
+    setIsPlaying(true);
+
+    // Cleanup when song ends
+    audio.onended = () => {
+      setIsPlaying(false);
+      setPlayingSongId(null);
+    };
+  };
 
 
   const startDrag = (e) => {
@@ -253,9 +394,13 @@ const [showHideModal, setShowHideModal] = useState(false);
   };
 
   const payload = {
+    media: previewUrl,
+    textPayload,
     privacy: storyPrivacy,
-    hiddenFrom, // array of user IDs
+    hiddenFrom,
+    onlyShareWith, // ✅ NEW
   };
+
 
 
   return (
@@ -327,7 +472,42 @@ const [showHideModal, setShowHideModal] = useState(false);
 
       {/* ================= PREVIEW ================= */}
       {previewUrl && (
-        <div className="relative w-[360px] h-[640px] rounded-[32px] overflow-visible bg-black shadow-xl">
+        <div className="w-full flex justify-center">
+        <div
+  className="
+    relative
+    w-[420px]
+    h-[748px]
+    rounded-[36px]
+    overflow-hidden
+    bg-black
+    shadow-2xl
+  "
+>
+
+         {selectedMusic && (
+  <div className="
+    absolute
+    top-4
+    right-4
+    z-30
+    flex
+    items-center
+    gap-2
+    px-3
+    py-1.5
+    rounded-full
+    bg-black/70
+    backdrop-blur
+  ">
+    <span className="text-xs text-white font-medium max-w-[160px] truncate">
+      {selectedMusic.title}
+    </span>
+    <AudioIcon />
+  </div>
+)}
+
+
           {/* MEDIA */}
           {previewUrl.includes("video") ? (
             <video
@@ -345,8 +525,18 @@ const [showHideModal, setShowHideModal] = useState(false);
             />
           )}
 
+          {selectedMusic && (
+            <div className="absolute top-3 right-3 z-30 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur">
+              <span className="text-xs text-white font-medium max-w-[120px] truncate">
+                {selectedMusic.title}
+              </span>
+              <AudioIcon />
+            </div>
+          )}
+
+
           {/* ================= RIGHT TOOLBAR ================= */}
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex flex-col gap-4 z-20">
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 flex flex-col gap-4 z-20">
             {isEditingText ? (
               <>
                 {/* 1️⃣ FONT (same icon, no change) */}
@@ -428,7 +618,7 @@ const [showHideModal, setShowHideModal] = useState(false);
                   <MuteIcon />
                 </SidebarButton>
 
-                <SidebarButton>
+                <SidebarButton onClick={() => setShowAudioModal(true)}>
                   <AudioIcon />
                 </SidebarButton>
 
@@ -438,6 +628,117 @@ const [showHideModal, setShowHideModal] = useState(false);
               </>
             )}
           </div>
+
+          {/* Music */}
+
+          {showAudioModal && (
+            <>
+              {/* BACKDROP */}
+              <div className="fixed inset-0 bg-black/40 z-40" />
+
+              {/* MODAL */}
+              <div className="fixed inset-0 z-50 flex items-center justify-center">
+                <div className="w-[534px] bg-white rounded-3xl overflow-hidden shadow-xl">
+
+                  {/* SEARCH */}
+                  <div className="px-4 py-3 border-b">
+                    <input
+                      placeholder="Search music"
+                      className="w-full px-4 py-2 rounded-full border text-sm"
+                    />
+                  </div>
+
+                  {/* TABS */}
+                  <div className="flex justify-center gap-6 text-sm py-2 border-b">
+                    {["forYou", "trending", "saved"].map((tab) => (
+                      <button
+                        key={tab}
+                        onClick={() => setActiveTab(tab)}
+                        className={`capitalize ${activeTab === tab
+                          ? "font-semibold border-b-2 border-black"
+                          : "text-gray-400"
+                          }`}
+                      >
+                        {tab.replace("You", " You")}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* LIST */}
+                  <div className="max-h-[360px] overflow-y-auto">
+                    {(activeTab === "saved" ? savedMusic : musicList).map((song) => {
+                      const isSaved = savedMusic.some((m) => m.id === song.id);
+
+                      return (
+                        <div
+                          key={song.id}
+                          className="flex items-center justify-between px-4 py-3 hover:bg-gray-50"
+                        >
+                          {/* LEFT */}
+                          <button
+                            onClick={() => togglePlay(song)}
+                            className="flex items-center gap-3 text-left"
+                          >
+                            <div className="relative">
+                              <img
+                                src={song.cover}
+                                className="w-12 h-12 rounded-md object-cover"
+                              />
+
+                              {/* PLAY / PAUSE OVERLAY */}
+                              {playingSongId === song.id && isPlaying && (
+                                <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-md">
+                                  <PlayPauseIcon />
+                                </div>
+                              )}
+                            </div>
+
+                            <div>
+                              <p className="text-sm font-medium">{song.title}</p>
+                              <p className="text-xs text-gray-500">{song.artist}</p>
+                            </div>
+                          </button>
+
+                          {/* RIGHT ICON */}
+                          <button
+                            onClick={() => {
+                              setSelectedMusic(song);      // ✅ final selected song
+                              setShowAudioModal(false);    // ✅ close modal
+                            }}
+                          >
+                            {playingSongId === song.id && isPlaying ? (
+                              <PlayingArrowIcon />
+                            ) : (
+                              <SaveIcon filled={savedMusic.some((m) => m.id === song.id)} />
+                            )}
+                          </button>
+
+                        </div>
+
+                      );
+                    })}
+
+                    {activeTab === "saved" && savedMusic.length === 0 && (
+                      <p className="text-center text-sm text-gray-400 py-8">
+                        No saved music
+                      </p>
+                    )}
+                  </div>
+
+                  {/* CLOSE */}
+                  <div className="p-4">
+                    <button
+                      onClick={() => setShowAudioModal(false)}
+                      className="w-full py-2 rounded-full bg-black text-white text-sm"
+                    >
+                      Done
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+
 
 
           {/* ================= TEXT OVERLAY ================= */}
@@ -626,8 +927,8 @@ const [showHideModal, setShowHideModal] = useState(false);
                       <span className="text-sm">My Friends</span>
                       <span
                         className={`w-4 h-4 rounded-full border ${storyPrivacy === "friends"
-                            ? "border-black bg-black"
-                            : "border-gray-400"
+                          ? "border-black bg-black"
+                          : "border-gray-400"
                           }`}
                       />
                     </button>
@@ -651,25 +952,30 @@ const [showHideModal, setShowHideModal] = useState(false);
                       </div>
                       <span
                         className={`w-4 h-4 rounded-full border ${storyPrivacy === "hide"
-                            ? "border-black bg-black"
-                            : "border-gray-400"
+                          ? "border-black bg-black"
+                          : "border-gray-400"
                           }`}
                       />
                     </button>
 
                     {/* ONLY SHARE WITH */}
                     <button
-                      onClick={() => setStoryPrivacy("only")}
+                      onClick={() => {
+                        setStoryPrivacy("only");
+                        setShowPrivacyModal(false);
+                        setShowOnlyModal(true);
+                      }}
                       className="flex items-center justify-between px-4 py-3 rounded-xl border"
                     >
+
                       <div className="flex flex-col text-left">
                         <span className="text-sm">Only Share With</span>
                         <span className="text-xs text-gray-400">50 Friends</span>
                       </div>
                       <span
                         className={`w-4 h-4 rounded-full border ${storyPrivacy === "only"
-                            ? "border-black bg-black"
-                            : "border-gray-400"
+                          ? "border-black bg-black"
+                          : "border-gray-400"
                           }`}
                       />
                     </button>
@@ -742,16 +1048,16 @@ const [showHideModal, setShowHideModal] = useState(false);
                   {hiddenFrom.length > 0 && (
                     <div className="px-4 py-2 border-t flex items-center gap-2">
                       <div className="flex -space-x-2">
-                       {hiddenFrom.slice(0, 3).map((id) => {
-  const friend = friends.find((f) => f.id === id);
-  return (
-    <img
-      key={id}
-      src={friend?.avatar}
-      className="w-7 h-7 rounded-full border-2 border-white"
-    />
-  );
-})}
+                        {hiddenFrom.slice(0, 3).map((id) => {
+                          const friend = friends.find((f) => f.id === id);
+                          return (
+                            <img
+                              key={id}
+                              src={friend?.avatar}
+                              className="w-7 h-7 rounded-full border-2 border-white"
+                            />
+                          );
+                        })}
 
                       </div>
                       <span className="text-xs text-gray-500">
@@ -777,7 +1083,96 @@ const [showHideModal, setShowHideModal] = useState(false);
             </>
           )}
         </div>
+        </div>
       )}
+
+      {showOnlyModal && (
+        <>
+          {/* BACKDROP */}
+          <div className="fixed inset-0 bg-black/40 z-40" />
+
+          {/* MODAL */}
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <div className="w-[320px] bg-white rounded-3xl overflow-hidden shadow-xl">
+
+              {/* HEADER */}
+              <div className="px-5 py-4 border-b text-center font-semibold">
+                Only Share With
+              </div>
+
+              {/* FRIEND LIST */}
+              <div className="max-h-[320px] overflow-y-auto px-4 py-3">
+                {friends.map((friend) => {
+                  const selected = onlyShareWith.includes(friend.id);
+
+                  return (
+                    <button
+                      key={friend.id}
+                      onClick={() => {
+                        setOnlyShareWith((prev) =>
+                          selected
+                            ? prev.filter((id) => id !== friend.id)
+                            : [...prev, friend.id]
+                        );
+                      }}
+                      className="w-full flex items-center justify-between py-3"
+                    >
+                      <div className="flex items-center gap-3">
+                        <img
+                          src={friend.avatar}
+                          className="w-9 h-9 rounded-full object-cover"
+                        />
+                        <span className="text-sm">{friend.name}</span>
+                      </div>
+
+                      {selected && (
+                        <div className="w-5 h-5 rounded-full bg-[#7b7a64] flex items-center justify-center text-white text-xs">
+                          ✓
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* SELECTED PREVIEW */}
+              {onlyShareWith.length > 0 && (
+                <div className="px-4 py-2 border-t flex items-center gap-2">
+                  <div className="flex -space-x-2">
+                    {onlyShareWith.slice(0, 3).map((id) => {
+                      const friend = friends.find((f) => f.id === id);
+                      return (
+                        <img
+                          key={id}
+                          src={friend?.avatar}
+                          className="w-7 h-7 rounded-full border-2 border-white"
+                        />
+                      );
+                    })}
+                  </div>
+                  <span className="text-xs text-gray-500">
+                    {onlyShareWith.length} selected
+                  </span>
+                </div>
+              )}
+
+              {/* DONE BUTTON */}
+              <div className="px-4 py-4">
+                <button
+                  onClick={() => {
+                    setShowOnlyModal(false);
+                    setShowPrivacyModal(true);
+                  }}
+                  className="w-full py-3 rounded-full bg-[#7b7a64] text-white font-medium"
+                >
+                  Done
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
 
 
       {/* ================= FILE INPUT ================= */}
