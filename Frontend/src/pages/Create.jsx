@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import AnnaCalviMiquelon from "../Assets/Music/AnnaCalviMiquelon.mp3";
 import AntonioVivaldiSummer from "../Assets/Music/AntonioVivaldiSummer.mp3";
 import BillieEilish from "../Assets/Music/BillieEilish.mp3";
@@ -6,7 +6,10 @@ import BillWithersAintNoSunshine from "../Assets/Music/BillWithersAintNoSunshine
 import BitterBelief from "../Assets/Music/BitterBelief.mp3";
 import BobDylanBallad from "../Assets/Music/BobDylanBallad.mp3";
 import DaxCatchTheRain from "../Assets/Music/DaxCatchTheRain.mp3";
-
+import MusicPicker from "../components/Music/MusicPicker";
+import SelectedMusicBadge from "../components/Music/SelectedMusicBadge";
+import MusicTrimModal from "../components/Music/MusicTrimModal";
+import VideoTrimModal from "../components/Video/VideoTrimModal";
 
 
 
@@ -99,45 +102,6 @@ const SvgButton = ({ onClick }) => {
   );
 };
 
-const SaveIcon = ({ filled = false }) => (
-  <svg
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M6 6.2C6 5.08 6 4.52 6.218 4.092C6.40974 3.71569 6.71569 3.40974 7.092 3.218C7.52 3 8.08 3 9.2 3H14.8C15.92 3 16.48 3 16.908 3.218C17.2843 3.40974 17.5903 3.71569 17.782 4.092C18 4.52 18 5.08 18 6.2V19.505C18 19.991 18 20.234 17.899 20.367C17.8554 20.4248 17.7997 20.4725 17.7358 20.5067C17.6719 20.5409 17.6013 20.5608 17.529 20.565C17.362 20.575 17.16 20.44 16.756 20.171L12 17L7.244 20.17C6.84 20.44 6.638 20.575 6.47 20.565C6.39784 20.5606 6.32748 20.5407 6.26377 20.5065C6.20007 20.4723 6.14453 20.4247 6.101 20.367C6 20.234 6 19.991 6 19.505V6.2Z"
-      fill={filled ? "#73725E" : "#FAF9F9"}
-      stroke="#73725E"
-      strokeWidth="1.77749"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
-const PlayPauseIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-    <path d="M10.5004 7.49951H9.00037V16.4995H10.5004V7.49951ZM15.0004 7.49951H13.5004V16.4995H15.0004V7.49951Z" fill="white" />
-    <path d="M12.0004 2.99951C13.7804 2.99951 15.5205 3.52735 17.0005 4.51629C18.4805 5.50522 19.6341 6.91083 20.3153 8.55536C20.9965 10.1999 21.1747 12.0095 20.8274 13.7553C20.4802 15.5012 19.623 17.1048 18.3643 18.3635C17.1057 19.6221 15.502 20.4793 13.7562 20.8266C12.0104 21.1738 10.2008 20.9956 8.55622 20.3144C6.91169 19.6332 5.50608 18.4797 4.51714 16.9996C3.52821 15.5196 3.00037 13.7795 3.00037 11.9995Z" fill="white" />
-  </svg>
-);
-
-
-const PlayingArrowIcon = () => (
-  <svg width="29" height="29" viewBox="0 0 29 29" fill="none">
-    <path
-      d="M22.5146 14.2193L15.4047 21.3293M22.5146 14.2193L15.4047 7.10938M22.5146 14.2193L5.92472 14.2193"
-      stroke="#73725E"
-      strokeWidth="2.36999"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
 function Create() {
   const fileInputRef = useRef(null);
 
@@ -147,13 +111,11 @@ function Create() {
   const [isMuted, setIsMuted] = useState(false);
 
   /* TEXT STATES */
-  const [activeTool, setActiveTool] = useState(null);
   const [text, setText] = useState("Type something");
   const [fontFamily, setFontFamily] = useState("Modern");
   const [textColor, setTextColor] = useState("#ffffff");
   const [textAlign, setTextAlign] = useState("center");
   const [textBg, setTextBg] = useState("transparent");
-  const [opacity, setOpacity] = useState(1);
   const [activeSubTool, setActiveSubTool] = useState(null); // "font" | "color"
   const [fontSize, setFontSize] = useState(24); // px
   const [textPosition, setTextPosition] = useState({ x: 0, y: 0 });
@@ -164,8 +126,6 @@ function Create() {
   const [isEditingText, setIsEditingText] = useState(false);
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const [storyPrivacy, setStoryPrivacy] = useState("friends");
-  // "friends" | "hide" | "only"
-  // demo users (replace with API later)
   const [friends] = useState([
     { id: 1, name: "Maddie", avatar: getRandomAvatar(1) },
     { id: 2, name: "Alex", avatar: getRandomAvatar(2) },
@@ -175,20 +135,23 @@ function Create() {
     { id: 6, name: "Daniel", avatar: getRandomAvatar(6) },
     { id: 7, name: "Olivia", avatar: getRandomAvatar(7) },
   ]);
-
-
   const [hiddenFrom, setHiddenFrom] = useState([]);
   const [showHideModal, setShowHideModal] = useState(false);
   const [showOnlyModal, setShowOnlyModal] = useState(false);
   const [onlyShareWith, setOnlyShareWith] = useState([]);
   const [showAudioModal, setShowAudioModal] = useState(false);
   const [savedMusic, setSavedMusic] = useState([]);
-  const [activeTab, setActiveTab] = useState("forYou");
   const [playingSongId, setPlayingSongId] = useState(null);
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedMusic, setSelectedMusic] = useState(null);
-  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
+  const [showMusicTrim, setShowMusicTrim] = useState(false);
+const [tempMusic, setTempMusic] = useState(null);
+const [previewType, setPreviewType] = useState(null);
+const [showVideoTrim, setShowVideoTrim] = useState(false);
+const [tempVideo, setTempVideo] = useState(null);
+
+
 
   const musicList = [
     {
@@ -241,40 +204,6 @@ function Create() {
       audio: DaxCatchTheRain,
     },
   ];
-
-
-  const togglePlay = (song) => {
-    // If same song clicked → toggle pause/play
-    if (playingSongId === song.id) {
-      if (isPlaying) {
-        audioRef.current.pause();
-        setIsPlaying(false);
-      } else {
-        audioRef.current.play();
-        setIsPlaying(true);
-      }
-      return;
-    }
-
-    // New song clicked → stop previous + play new
-    if (audioRef.current) {
-      audioRef.current.pause();
-    }
-
-    const audio = new Audio(song.audio);
-    audioRef.current = audio;
-
-    audio.play();
-    setPlayingSongId(song.id);
-    setIsPlaying(true);
-
-    // Cleanup when song ends
-    audio.onended = () => {
-      setIsPlaying(false);
-      setPlayingSongId(null);
-    };
-  };
-
 
   const startDrag = (e) => {
     e.preventDefault();
@@ -336,7 +265,6 @@ function Create() {
     window.addEventListener("touchend", onEnd);
   };
 
-
   const acceptTypes = {
     post: "image/*,video/*",
     story: "image/*,video/*",
@@ -356,7 +284,6 @@ function Create() {
     Courier: "Courier New",
   };
 
-
   /* STEP 1: CLICK TOP BUTTON */
   const handleTopButtonClick = (type) => {
     setActiveType(type);
@@ -369,37 +296,29 @@ function Create() {
   };
 
   /* STEP 3: FILE SELECTED */
-  const handleFileChange = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+ const handleFileChange = (e) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
 
-    setPreviewUrl(URL.createObjectURL(file));
-    setShowUploadArea(false);
-  };
+  const url = URL.createObjectURL(file);
+  const isVideo = file.type.startsWith("video");
 
-  const textPayload = {
-    text,
-    fontFamily,
-    textColor,
-    textBg,
-    fontSize,
-    textAlign,
-    position: textPosition,
-  };
+  setPreviewUrl(url);
+  setPreviewType(isVideo ? "video" : "image");
+  setShowUploadArea(false);
 
-  const storyPayload = {
-    media: previewUrl,
-    textPayload,
-    privacy: storyPrivacy,
-  };
-
-  const payload = {
-    media: previewUrl,
-    textPayload,
-    privacy: storyPrivacy,
-    hiddenFrom,
-    onlyShareWith, // ✅ NEW
-  };
+  if (isVideo) {
+    // 🎥 VIDEO → open VideoTrimModule
+    setTempVideo({
+      file,
+      url,
+    });
+    setShowVideoTrim(true);
+  } else {
+    // 📷 IMAGE → normal flow (music trim later)
+    setTempVideo(null);
+  }
+};
 
 
 
@@ -473,8 +392,8 @@ function Create() {
       {/* ================= PREVIEW ================= */}
       {previewUrl && (
         <div className="w-full flex justify-center">
-        <div
-  className="
+          <div
+            className="
     relative
     w-[420px]
     h-[748px]
@@ -483,348 +402,224 @@ function Create() {
     bg-black
     shadow-2xl
   "
->
+          >
 
-         {selectedMusic && (
-  <div className="
-    absolute
-    top-4
-    right-4
-    z-30
-    flex
-    items-center
-    gap-2
-    px-3
-    py-1.5
-    rounded-full
-    bg-black/70
-    backdrop-blur
-  ">
-    <span className="text-xs text-white font-medium max-w-[160px] truncate">
-      {selectedMusic.title}
-    </span>
-    <AudioIcon />
-  </div>
-)}
+            <SelectedMusicBadge music={selectedMusic} />
 
+            {/* MEDIA */}
+            {previewType === "video" ? (
 
-          {/* MEDIA */}
-          {previewUrl.includes("video") ? (
-            <video
-              src={previewUrl}
-              autoPlay
-              loop
-              muted={isMuted}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <img
-              src={previewUrl}
-              alt="preview"
-              className="w-full h-full object-cover"
-            />
-          )}
-
-          {selectedMusic && (
-            <div className="absolute top-3 right-3 z-30 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur">
-              <span className="text-xs text-white font-medium max-w-[120px] truncate">
-                {selectedMusic.title}
-              </span>
-              <AudioIcon />
-            </div>
-          )}
-
-
-          {/* ================= RIGHT TOOLBAR ================= */}
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 flex flex-col gap-4 z-20">
-            {isEditingText ? (
-              <>
-                {/* 1️⃣ FONT (same icon, no change) */}
-                <SidebarButton
-                  onClick={() =>
-                    setActiveSubTool(prev => (prev === "font" ? null : "font"))
-                  }
-                >
-                  <FontIcon />
-                </SidebarButton>
-
-                <SidebarButton
-                  onClick={() =>
-                    setActiveSubTool(prev => (prev === "color" ? null : "color"))
-                  }
-                >
-                  <ColorIcon />
-                </SidebarButton>
-
-                {/* 3️⃣ ALIGNMENT */}
-                <SidebarButton
-                  onClick={() =>
-                    setTextAlign(
-                      textAlign === "center"
-                        ? "left"
-                        : textAlign === "left"
-                          ? "right"
-                          : "center"
-                    )
-                  }
-                >
-                  <AlignIcon />
-                </SidebarButton>
-
-                {/* 4️⃣ TEXT BACKGROUND */}
-                <SidebarButton
-                  onClick={() => {
-                    if (textBg === "transparent") {
-                      setTextBg("white");
-                      setTextColor("#000000");
-                    } else if (textBg === "white") {
-                      setTextBg("black");
-                      setTextColor("#ffffff");
-                    } else {
-                      setTextBg("transparent");
-                      setTextColor("#ffffff");
-                    }
-                  }}
-                >
-                  <TextBgIcon />
-                </SidebarButton>
-
-                {/* 5️⃣ TEXT SIZE */}
-                <SidebarButton
-                  onClick={() =>
-                    setActiveSubTool(prev => (prev === "size" ? null : "size"))
-                  }
-                >
-                  <TextSizeIcon />
-                </SidebarButton>
-
-              </>
+              <video
+                src={previewUrl}
+                autoPlay
+                loop
+                muted={isMuted}
+                className="w-full h-full object-cover"
+              />
             ) : (
-              <>
-                {/* DEFAULT TOOLBAR */}
-                <SidebarButton
-                  onClick={() => {
-                    setActiveTool("font");
-                    setActiveSubTool("font");
-                    setIsEditingText(true);
-                  }}
-                >
-                  <FontIcon />
-                </SidebarButton>
-
-
-
-                <SidebarButton onClick={() => setIsMuted(!isMuted)}>
-                  <MuteIcon />
-                </SidebarButton>
-
-                <SidebarButton onClick={() => setShowAudioModal(true)}>
-                  <AudioIcon />
-                </SidebarButton>
-
-                <SidebarButton>
-                  <CropIcon />
-                </SidebarButton>
-              </>
+              <img
+                src={previewUrl}
+                alt="preview"
+                className="w-full h-full object-cover"
+              />
             )}
-          </div>
+
+            {/* ================= RIGHT TOOLBAR ================= */}
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 flex flex-col gap-4 z-20">
+              {isEditingText ? (
+                <>
+                  {/* 1️⃣ FONT (same icon, no change) */}
+                  <SidebarButton
+                    onClick={() =>
+                      setActiveSubTool(prev => (prev === "font" ? null : "font"))
+                    }
+                  >
+                    <FontIcon />
+                  </SidebarButton>
+
+                  <SidebarButton
+                    onClick={() =>
+                      setActiveSubTool(prev => (prev === "color" ? null : "color"))
+                    }
+                  >
+                    <ColorIcon />
+                  </SidebarButton>
+
+                  {/* 3️⃣ ALIGNMENT */}
+                  <SidebarButton
+                    onClick={() =>
+                      setTextAlign(
+                        textAlign === "center"
+                          ? "left"
+                          : textAlign === "left"
+                            ? "right"
+                            : "center"
+                      )
+                    }
+                  >
+                    <AlignIcon />
+                  </SidebarButton>
+
+                  {/* 4️⃣ TEXT BACKGROUND */}
+                  <SidebarButton
+                    onClick={() => {
+                      if (textBg === "transparent") {
+                        setTextBg("white");
+                        setTextColor("#000000");
+                      } else if (textBg === "white") {
+                        setTextBg("black");
+                        setTextColor("#ffffff");
+                      } else {
+                        setTextBg("transparent");
+                        setTextColor("#ffffff");
+                      }
+                    }}
+                  >
+                    <TextBgIcon />
+                  </SidebarButton>
+
+                  {/* 5️⃣ TEXT SIZE */}
+                  <SidebarButton
+                    onClick={() =>
+                      setActiveSubTool(prev => (prev === "size" ? null : "size"))
+                    }
+                  >
+                    <TextSizeIcon />
+                  </SidebarButton>
+
+                </>
+              ) : (
+                <>
+                  {/* DEFAULT TOOLBAR */}
+                  <SidebarButton
+                    onClick={() => {
+                      setActiveSubTool("font");
+                      setIsEditingText(true);
+                    }}
+                  >
+                    <FontIcon />
+                  </SidebarButton>
+
+                  <SidebarButton onClick={() => setIsMuted(!isMuted)}>
+                    <MuteIcon />
+                  </SidebarButton>
+
+                  <SidebarButton onClick={() => setShowAudioModal(true)}>
+                    <AudioIcon />
+                  </SidebarButton>
+
+                  <SidebarButton>
+                    <CropIcon />
+                  </SidebarButton>
+                </>
+              )}
+            </div>
 
           {/* Music */}
+<MusicPicker
+  open={showAudioModal}
+  onClose={() => {
+    setShowAudioModal(false);
+    if (audioRef.current) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    }
+  }}
+  musicList={musicList}
+  savedMusic={savedMusic}
+  setSavedMusic={setSavedMusic}
+  playingSongId={playingSongId}
+  setPlayingSongId={setPlayingSongId}
+  isPlaying={isPlaying}
+  setIsPlaying={setIsPlaying}
+  audioRef={audioRef}
+  setSelectedMusic={setSelectedMusic}
+  setTempMusic={setTempMusic}
+  setShowMusicTrim={setShowMusicTrim}
+/>
 
-          {showAudioModal && (
-            <>
-              {/* BACKDROP */}
-              <div className="fixed inset-0 bg-black/40 z-40" />
+            {/* ================= TEXT OVERLAY ================= */}
+            {(isEditingText || text) && (
+              <textarea
+                ref={textRef}
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                onMouseDown={startDrag}
+                onTouchStart={startDrag}
+                className="absolute outline-none resize-none z-10 px-4 py-2 rounded-lg cursor-move"
+                style={{
+                  fontFamily: fontsMap[fontFamily],
+                  color: textColor,
+                  textAlign,
+                  backgroundColor: textBg,
+                  fontSize: `${fontSize}px`,
+                  left: "50%",
+                  top: "50%",
+                  transform: `translate(-50%, -50%) translate(${textPosition.x}px, ${textPosition.y}px)`,
+                }}
+              />
+            )}
 
-              {/* MODAL */}
-              <div className="fixed inset-0 z-50 flex items-center justify-center">
-                <div className="w-[534px] bg-white rounded-3xl overflow-hidden shadow-xl">
-
-                  {/* SEARCH */}
-                  <div className="px-4 py-3 border-b">
-                    <input
-                      placeholder="Search music"
-                      className="w-full px-4 py-2 rounded-full border text-sm"
-                    />
-                  </div>
-
-                  {/* TABS */}
-                  <div className="flex justify-center gap-6 text-sm py-2 border-b">
-                    {["forYou", "trending", "saved"].map((tab) => (
+            {/* ================= FONT SELECTOR ================= */}
+            {!isDraggingText && activeSubTool === "font" && (
+              <div className="absolute bottom-28 left-1/2 -translate-x-1/2 w-[260px] z-20">
+                <div className="overflow-x-auto no-scrollbar bg-black/40 rounded-full">
+                  <div className="flex gap-3 px-4 py-3 w-max">
+                    {Object.keys(fontsMap).map((font) => (
                       <button
-                        key={tab}
-                        onClick={() => setActiveTab(tab)}
-                        className={`capitalize ${activeTab === tab
-                          ? "font-semibold border-b-2 border-black"
-                          : "text-gray-400"
+                        key={font}
+                        onClick={() => setFontFamily(font)}
+                        className={`px-4 py-2 rounded-full text-sm shrink-0 border ${fontFamily === font
+                          ? "bg-white text-black"
+                          : "text-white border-white/50"
                           }`}
+                        style={{ fontFamily: fontsMap[font] }}
                       >
-                        {tab.replace("You", " You")}
+                        {font}
                       </button>
                     ))}
                   </div>
-
-                  {/* LIST */}
-                  <div className="max-h-[360px] overflow-y-auto">
-                    {(activeTab === "saved" ? savedMusic : musicList).map((song) => {
-                      const isSaved = savedMusic.some((m) => m.id === song.id);
-
-                      return (
-                        <div
-                          key={song.id}
-                          className="flex items-center justify-between px-4 py-3 hover:bg-gray-50"
-                        >
-                          {/* LEFT */}
-                          <button
-                            onClick={() => togglePlay(song)}
-                            className="flex items-center gap-3 text-left"
-                          >
-                            <div className="relative">
-                              <img
-                                src={song.cover}
-                                className="w-12 h-12 rounded-md object-cover"
-                              />
-
-                              {/* PLAY / PAUSE OVERLAY */}
-                              {playingSongId === song.id && isPlaying && (
-                                <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-md">
-                                  <PlayPauseIcon />
-                                </div>
-                              )}
-                            </div>
-
-                            <div>
-                              <p className="text-sm font-medium">{song.title}</p>
-                              <p className="text-xs text-gray-500">{song.artist}</p>
-                            </div>
-                          </button>
-
-                          {/* RIGHT ICON */}
-                          <button
-                            onClick={() => {
-                              setSelectedMusic(song);      // ✅ final selected song
-                              setShowAudioModal(false);    // ✅ close modal
-                            }}
-                          >
-                            {playingSongId === song.id && isPlaying ? (
-                              <PlayingArrowIcon />
-                            ) : (
-                              <SaveIcon filled={savedMusic.some((m) => m.id === song.id)} />
-                            )}
-                          </button>
-
-                        </div>
-
-                      );
-                    })}
-
-                    {activeTab === "saved" && savedMusic.length === 0 && (
-                      <p className="text-center text-sm text-gray-400 py-8">
-                        No saved music
-                      </p>
-                    )}
-                  </div>
-
-                  {/* CLOSE */}
-                  <div className="p-4">
-                    <button
-                      onClick={() => setShowAudioModal(false)}
-                      className="w-full py-2 rounded-full bg-black text-white text-sm"
-                    >
-                      Done
-                    </button>
+                </div>
+              </div>
+            )}
+            {!isDraggingText && activeSubTool === "color" && (
+              <div className="absolute bottom-28 left-1/2 -translate-x-1/2 w-[260px] z-20">
+                <div className="overflow-x-auto no-scrollbar bg-black/40 rounded-full">
+                  <div className="flex gap-3 px-4 py-3 w-max">
+                    {[
+                      "#ffffff",
+                      "#ff0000",
+                      "#ff9900",
+                      "#ffee00",
+                      "#33cc33",
+                      "#00ccff",
+                      "#3366ff",
+                      "#aa00ff",
+                      "#ff66cc",
+                      "#000000",
+                    ].map((color) => (
+                      <button
+                        key={color}
+                        onClick={() => setTextColor(color)}
+                        className={`w-8 h-8 rounded-full border-2 shrink-0 ${textColor === color ? "border-white" : "border-white/40"
+                          }`}
+                        style={{ backgroundColor: color }}
+                      />
+                    ))}
                   </div>
                 </div>
               </div>
-            </>
-          )}
+            )}
 
+            {isEditingText && (
+              <button
+                onClick={() => {
+                  // ❗ DO NOT reset any text state
+                  setIsEditingText(false);
+                  setActiveSubTool(null);
+                }}
 
-
-          {/* ================= TEXT OVERLAY ================= */}
-          {(isEditingText || text) && (
-            <textarea
-              ref={textRef}
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              onMouseDown={startDrag}
-              onTouchStart={startDrag}
-              className="absolute outline-none resize-none z-10 px-4 py-2 rounded-lg cursor-move"
-              style={{
-                fontFamily: fontsMap[fontFamily],
-                color: textColor,
-                textAlign,
-                backgroundColor: textBg,
-                fontSize: `${fontSize}px`,
-                left: "50%",
-                top: "50%",
-                transform: `translate(-50%, -50%) translate(${textPosition.x}px, ${textPosition.y}px)`,
-              }}
-            />
-          )}
-
-
-          {/* ================= FONT SELECTOR ================= */}
-          {!isDraggingText && activeSubTool === "font" && (
-            <div className="absolute bottom-28 left-1/2 -translate-x-1/2 w-[260px] z-20">
-              <div className="overflow-x-auto no-scrollbar bg-black/40 rounded-full">
-                <div className="flex gap-3 px-4 py-3 w-max">
-                  {Object.keys(fontsMap).map((font) => (
-                    <button
-                      key={font}
-                      onClick={() => setFontFamily(font)}
-                      className={`px-4 py-2 rounded-full text-sm shrink-0 border ${fontFamily === font
-                        ? "bg-white text-black"
-                        : "text-white border-white/50"
-                        }`}
-                      style={{ fontFamily: fontsMap[font] }}
-                    >
-                      {font}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-          {!isDraggingText && activeSubTool === "color" && (
-            <div className="absolute bottom-28 left-1/2 -translate-x-1/2 w-[260px] z-20">
-              <div className="overflow-x-auto no-scrollbar bg-black/40 rounded-full">
-                <div className="flex gap-3 px-4 py-3 w-max">
-                  {[
-                    "#ffffff",
-                    "#ff0000",
-                    "#ff9900",
-                    "#ffee00",
-                    "#33cc33",
-                    "#00ccff",
-                    "#3366ff",
-                    "#aa00ff",
-                    "#ff66cc",
-                    "#000000",
-                  ].map((color) => (
-                    <button
-                      key={color}
-                      onClick={() => setTextColor(color)}
-                      className={`w-8 h-8 rounded-full border-2 shrink-0 ${textColor === color ? "border-white" : "border-white/40"
-                        }`}
-                      style={{ backgroundColor: color }}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {isEditingText && (
-            <button
-              onClick={() => {
-                // ❗ DO NOT reset any text state
-                setIsEditingText(false);
-                setActiveTool(null);
-                setActiveSubTool(null);
-              }}
-
-              className="
+                className="
       absolute
       top-4
       left-1/2
@@ -839,250 +634,268 @@ function Create() {
       z-30
       shadow-md
     "
-            >
-              Done
-            </button>
-          )}
+              >
+                Done
+              </button>
+            )}
+            {!isDraggingText && activeSubTool === "size" && (
+              <div className="absolute bottom-28 left-1/2 -translate-x-1/2 w-[260px] z-20">
+                <div className="bg-black/40 rounded-full px-4 py-4">
 
+                  {/* LABEL */}
+                  <div className="flex justify-between text-white text-xs mb-2">
+                    <span>A</span>
+                    <span style={{ fontSize: 18 }}>A</span>
+                  </div>
 
-          {!isDraggingText && activeSubTool === "size" && (
-            <div className="absolute bottom-28 left-1/2 -translate-x-1/2 w-[260px] z-20">
-              <div className="bg-black/40 rounded-full px-4 py-4">
-
-                {/* LABEL */}
-                <div className="flex justify-between text-white text-xs mb-2">
-                  <span>A</span>
-                  <span style={{ fontSize: 18 }}>A</span>
+                  {/* SLIDER */}
+                  <input
+                    type="range"
+                    min={14}
+                    max={60}
+                    value={fontSize}
+                    onChange={(e) => setFontSize(Number(e.target.value))}
+                    className="w-full accent-white"
+                  />
                 </div>
-
-                {/* SLIDER */}
-                <input
-                  type="range"
-                  min={14}
-                  max={60}
-                  value={fontSize}
-                  onChange={(e) => setFontSize(Number(e.target.value))}
-                  className="w-full accent-white"
-                />
               </div>
-            </div>
-          )}
+            )}
 
-          {showTrash && (
-            <div
-              ref={trashRef}
-              className="fixed bottom-10 left-1/2 -translate-x-1/2 z-40"
-            >
-              <div className="w-14 h-14 rounded-full bg-black/80 flex items-center justify-center">
-                <svg
-                  width="24"
-                  height="24"
-                  fill="none"
-                  stroke="white"
-                  strokeWidth="2"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M3 6h18" />
-                  <path d="M8 6v14h8V6" />
-                  <path d="M10 10v6" />
-                  <path d="M14 10v6" />
-                  <path d="M9 6l1-2h4l1 2" />
-                </svg>
-              </div>
-            </div>
-          )}
-
-          {/* ================= BOTTOM ACTION BAR ================= */}
-          {!isEditingText && (
-            <div className="absolute bottom-5 left-0 right-0 flex items-center justify-center z-20">
-              <StoryPrivacyButton onClick={() => setShowPrivacyModal(true)} />
-              <SvgButton onClick={() => console.log("next")} />
-            </div>
-          )}
-
-          {showPrivacyModal && (
-            <>
-              {/* BACKDROP */}
+            {showTrash && (
               <div
-                className="fixed inset-0 bg-black/40 z-40"
-                onClick={() => setShowPrivacyModal(false)}
-              />
-
-              {/* MODAL */}
-              <div className="fixed inset-0 z-50 flex items-center justify-center">
-                <div className="w-[300px] bg-white rounded-2xl px-5 py-6 shadow-xl">
-                  {/* TITLE */}
-                  <h3 className="text-center text-[16px] font-semibold mb-4">
-                    Who Can See Your Story
-                  </h3>
-
-                  {/* OPTIONS */}
-                  <div className="flex flex-col gap-3">
-
-                    {/* MY FRIENDS */}
-                    <button
-                      onClick={() => setStoryPrivacy("friends")}
-                      className="flex items-center justify-between px-4 py-3 rounded-xl border"
-                    >
-                      <span className="text-sm">My Friends</span>
-                      <span
-                        className={`w-4 h-4 rounded-full border ${storyPrivacy === "friends"
-                          ? "border-black bg-black"
-                          : "border-gray-400"
-                          }`}
-                      />
-                    </button>
-
-                    {/* HIDE STORY */}
-                    <button
-                      onClick={() => {
-                        setStoryPrivacy("hide");
-                        setShowPrivacyModal(false);
-                        setShowHideModal(true);
-                      }}
-
-                      className="flex items-center justify-between px-4 py-3 rounded-xl border"
-                    >
-                      <div className="flex flex-col text-left">
-                        <span className="text-sm">Hide Story From</span>
-                        <span className="text-xs text-gray-400">
-                          {hiddenFrom.length} Friends
-                        </span>
-
-                      </div>
-                      <span
-                        className={`w-4 h-4 rounded-full border ${storyPrivacy === "hide"
-                          ? "border-black bg-black"
-                          : "border-gray-400"
-                          }`}
-                      />
-                    </button>
-
-                    {/* ONLY SHARE WITH */}
-                    <button
-                      onClick={() => {
-                        setStoryPrivacy("only");
-                        setShowPrivacyModal(false);
-                        setShowOnlyModal(true);
-                      }}
-                      className="flex items-center justify-between px-4 py-3 rounded-xl border"
-                    >
-
-                      <div className="flex flex-col text-left">
-                        <span className="text-sm">Only Share With</span>
-                        <span className="text-xs text-gray-400">50 Friends</span>
-                      </div>
-                      <span
-                        className={`w-4 h-4 rounded-full border ${storyPrivacy === "only"
-                          ? "border-black bg-black"
-                          : "border-gray-400"
-                          }`}
-                      />
-                    </button>
-                  </div>
-
-                  {/* CLOSE BUTTON */}
-                  <button
-                    onClick={() => setShowPrivacyModal(false)}
-                    className="mt-5 w-full flex justify-center"
+                ref={trashRef}
+                className="fixed bottom-10 left-1/2 -translate-x-1/2 z-40"
+              >
+                <div className="w-14 h-14 rounded-full bg-black/80 flex items-center justify-center">
+                  <svg
+                    width="24"
+                    height="24"
+                    fill="none"
+                    stroke="white"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
                   >
-                    <div className="w-9 h-9 rounded-full border flex items-center justify-center">
-                      ✕
-                    </div>
-                  </button>
+                    <path d="M3 6h18" />
+                    <path d="M8 6v14h8V6" />
+                    <path d="M10 10v6" />
+                    <path d="M14 10v6" />
+                    <path d="M9 6l1-2h4l1 2" />
+                  </svg>
                 </div>
               </div>
-            </>
-          )}
+            )}
 
-          {showHideModal && (
-            <>
-              {/* BACKDROP */}
-              <div className="fixed inset-0 bg-black/40 z-40" />
+            {/* ================= BOTTOM ACTION BAR ================= */}
+            <MusicTrimModal
+  open={showMusicTrim}
+  music={tempMusic}
+  onBack={() => setShowMusicTrim(false)}
+  onConfirm={(musicWithTrim) => {
+    setSelectedMusic(musicWithTrim);
+    setShowMusicTrim(false);
+  }}
+/>
+<VideoTrimModal
+  open={showVideoTrim}
+  video={tempVideo}
+  onBack={() => setShowVideoTrim(false)}
+  onConfirm={(trimmedVideo) => {
+    console.log("Final video:", trimmedVideo);
+    setShowVideoTrim(false);
+  }}
+/>
 
-              {/* MODAL */}
-              <div className="fixed inset-0 z-50 flex items-center justify-center">
-                <div className="w-[320px] bg-white rounded-3xl overflow-hidden shadow-xl">
 
-                  {/* HEADER */}
-                  <div className="px-5 py-4 border-b text-center font-semibold">
-                    Hide Story From
-                  </div>
+            {!isEditingText && (
+              <div className="absolute bottom-5 left-0 right-0 flex items-center justify-center z-20">
+                <StoryPrivacyButton onClick={() => setShowPrivacyModal(true)} />
+                <SvgButton onClick={() => console.log("next")} />
+              </div>
+            )}
 
-                  {/* FRIEND LIST */}
-                  <div className="max-h-[320px] overflow-y-auto px-4 py-3">
-                    {friends.map((friend) => {
-                      const selected = hiddenFrom.includes(friend.id);
+            {showPrivacyModal && (
+              <>
+                {/* BACKDROP */}
+                <div
+                  className="fixed inset-0 bg-black/40 z-40"
+                  onClick={() => setShowPrivacyModal(false)}
+                />
 
-                      return (
-                        <button
-                          key={friend.id}
-                          onClick={() => {
-                            setHiddenFrom((prev) =>
-                              selected
-                                ? prev.filter((id) => id !== friend.id)
-                                : [...prev, friend.id]
-                            );
-                          }}
-                          className="w-full flex items-center justify-between py-3"
-                        >
-                          <div className="flex items-center gap-3">
-                            <img
-                              src={friend.avatar}
-                              className="w-9 h-9 rounded-full object-cover"
-                            />
-                            <span className="text-sm">{friend.name}</span>
-                          </div>
+                {/* MODAL */}
+                <div className="fixed inset-0 z-50 flex items-center justify-center">
+                  <div className="w-[300px] bg-white rounded-2xl px-5 py-6 shadow-xl">
+                    {/* TITLE */}
+                    <h3 className="text-center text-[16px] font-semibold mb-4">
+                      Who Can See Your Story
+                    </h3>
 
-                          {selected && (
-                            <div className="w-5 h-5 rounded-full bg-[#7b7a64] flex items-center justify-center text-white text-xs">
-                              ✓
-                            </div>
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
+                    {/* OPTIONS */}
+                    <div className="flex flex-col gap-3">
 
-                  {/* SELECTED PREVIEW */}
-                  {hiddenFrom.length > 0 && (
-                    <div className="px-4 py-2 border-t flex items-center gap-2">
-                      <div className="flex -space-x-2">
-                        {hiddenFrom.slice(0, 3).map((id) => {
-                          const friend = friends.find((f) => f.id === id);
-                          return (
-                            <img
-                              key={id}
-                              src={friend?.avatar}
-                              className="w-7 h-7 rounded-full border-2 border-white"
-                            />
-                          );
-                        })}
+                      {/* MY FRIENDS */}
+                      <button
+                        onClick={() => setStoryPrivacy("friends")}
+                        className="flex items-center justify-between px-4 py-3 rounded-xl border"
+                      >
+                        <span className="text-sm">My Friends</span>
+                        <span
+                          className={`w-4 h-4 rounded-full border ${storyPrivacy === "friends"
+                            ? "border-black bg-black"
+                            : "border-gray-400"
+                            }`}
+                        />
+                      </button>
 
-                      </div>
-                      <span className="text-xs text-gray-500">
-                        {hiddenFrom.length} selected
-                      </span>
+                      {/* HIDE STORY */}
+                      <button
+                        onClick={() => {
+                          setStoryPrivacy("hide");
+                          setShowPrivacyModal(false);
+                          setShowHideModal(true);
+                        }}
+
+                        className="flex items-center justify-between px-4 py-3 rounded-xl border"
+                      >
+                        <div className="flex flex-col text-left">
+                          <span className="text-sm">Hide Story From</span>
+                          <span className="text-xs text-gray-400">
+                            {hiddenFrom.length} Friends
+                          </span>
+
+                        </div>
+                        <span
+                          className={`w-4 h-4 rounded-full border ${storyPrivacy === "hide"
+                            ? "border-black bg-black"
+                            : "border-gray-400"
+                            }`}
+                        />
+                      </button>
+
+                      {/* ONLY SHARE WITH */}
+                      <button
+                        onClick={() => {
+                          setStoryPrivacy("only");
+                          setShowPrivacyModal(false);
+                          setShowOnlyModal(true);
+                        }}
+                        className="flex items-center justify-between px-4 py-3 rounded-xl border"
+                      >
+
+                        <div className="flex flex-col text-left">
+                          <span className="text-sm">Only Share With</span>
+                          <span className="text-xs text-gray-400">50 Friends</span>
+                        </div>
+                        <span
+                          className={`w-4 h-4 rounded-full border ${storyPrivacy === "only"
+                            ? "border-black bg-black"
+                            : "border-gray-400"
+                            }`}
+                        />
+                      </button>
                     </div>
-                  )}
 
-                  {/* DONE BUTTON */}
-                  <div className="px-4 py-4">
+                    {/* CLOSE BUTTON */}
                     <button
-                      onClick={() => {
-                        setShowHideModal(false);
-                        setShowPrivacyModal(true);
-                      }}
-                      className="w-full py-3 rounded-full bg-[#7b7a64] text-white font-medium"
+                      onClick={() => setShowPrivacyModal(false)}
+                      className="mt-5 w-full flex justify-center"
                     >
-                      Done
+                      <div className="w-9 h-9 rounded-full border flex items-center justify-center">
+                        ✕
+                      </div>
                     </button>
                   </div>
                 </div>
-              </div>
-            </>
-          )}
-        </div>
+              </>
+            )}
+
+            {showHideModal && (
+              <>
+                {/* BACKDROP */}
+                <div className="fixed inset-0 bg-black/40 z-40" />
+
+                {/* MODAL */}
+                <div className="fixed inset-0 z-50 flex items-center justify-center">
+                  <div className="w-[320px] bg-white rounded-3xl overflow-hidden shadow-xl">
+
+                    {/* HEADER */}
+                    <div className="px-5 py-4 border-b text-center font-semibold">
+                      Hide Story From
+                    </div>
+
+                    {/* FRIEND LIST */}
+                    <div className="max-h-[320px] overflow-y-auto px-4 py-3">
+                      {friends.map((friend) => {
+                        const selected = hiddenFrom.includes(friend.id);
+
+                        return (
+                          <button
+                            key={friend.id}
+                            onClick={() => {
+                              setHiddenFrom((prev) =>
+                                selected
+                                  ? prev.filter((id) => id !== friend.id)
+                                  : [...prev, friend.id]
+                              );
+                            }}
+                            className="w-full flex items-center justify-between py-3"
+                          >
+                            <div className="flex items-center gap-3">
+                              <img
+                                src={friend.avatar}
+                                className="w-9 h-9 rounded-full object-cover"
+                              />
+                              <span className="text-sm">{friend.name}</span>
+                            </div>
+
+                            {selected && (
+                              <div className="w-5 h-5 rounded-full bg-[#7b7a64] flex items-center justify-center text-white text-xs">
+                                ✓
+                              </div>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* SELECTED PREVIEW */}
+                    {hiddenFrom.length > 0 && (
+                      <div className="px-4 py-2 border-t flex items-center gap-2">
+                        <div className="flex -space-x-2">
+                          {hiddenFrom.slice(0, 3).map((id) => {
+                            const friend = friends.find((f) => f.id === id);
+                            return (
+                              <img
+                                key={id}
+                                src={friend?.avatar}
+                                className="w-7 h-7 rounded-full border-2 border-white"
+                              />
+                            );
+                          })}
+
+                        </div>
+                        <span className="text-xs text-gray-500">
+                          {hiddenFrom.length} selected
+                        </span>
+                      </div>
+                    )}
+
+                    {/* DONE BUTTON */}
+                    <div className="px-4 py-4">
+                      <button
+                        onClick={() => {
+                          setShowHideModal(false);
+                          setShowPrivacyModal(true);
+                        }}
+                        className="w-full py-3 rounded-full bg-[#7b7a64] text-white font-medium"
+                      >
+                        Done
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       )}
 
@@ -1172,9 +985,6 @@ function Create() {
           </div>
         </>
       )}
-
-
-
       {/* ================= FILE INPUT ================= */}
       <input
         ref={fileInputRef}
@@ -1313,9 +1123,6 @@ const ColorIcon = () => (
   </svg>
 );
 
-
-
-
 const AlignIcon = () => (
   <svg width="23" height="23" viewBox="0 0 23 23" fill="none">
     <path
@@ -1389,9 +1196,6 @@ const TextSizeIcon = () => (
     </defs>
   </svg>
 );
-
-
-
 
 /* ================= TOP BUTTON ================= */
 const ButtonWithBg = ({ label, onClick, variant }) => {
@@ -1482,8 +1286,8 @@ const ButtonWithBg = ({ label, onClick, variant }) => {
         {label}
       </span>
     </button>
+    
   );
 };
-
 
 export default Create;
